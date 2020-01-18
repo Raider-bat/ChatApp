@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ChatLogActivity"
+    android:background="@color/activityBgdColor">
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/chat_log_list_message"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#1D1D1D"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toTopOf="@+id/chat_log_edit_message"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+    </androidx.recyclerview.widget.RecyclerView>
+
+
+    <EditText
+        android:id="@+id/chat_log_edit_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#00B1B1B1"
+        android:cursorVisible="true"
+        android:hint="Cообщение"
+        android:inputType="textMultiLine|textCapSentences"
+        android:isScrollContainer="true"
+        android:maxLines="5"
+        android:minLines="1"
+        android:paddingLeft="30dp"
+        android:paddingRight="45dp"
+        android:paddingBottom="15dp"
+        android:scrollbars="vertical"
+        android:singleLine="false"
+        android:textColor="#FFFFFF"
+        android:textColorHint="#CBCFCFCF"
+        android:textColorLink="#38B5EB"
+        android:textCursorDrawable="@android:color/background_light"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+    </EditText>
+
+    <ImageButton
+        android:id="@+id/chat_log_send_Button"
+        android:layout_width="55dp"
+        android:layout_height="53dp"
+        android:background="#00444444"
+        android:clickable="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+
+        app:srcCompat="@drawable/ic_action_name" />
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

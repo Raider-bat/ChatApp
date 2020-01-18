@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:title="Выход" app:showAsAction="never"
+        android:id="@+id/menu_sign_out"/>
+    <item android:title=""
+        android:id="@+id/menu_contacts"
+        android:icon="@drawable/ic_search_white_24dp" app:showAsAction="always"></item>
+</menu>
