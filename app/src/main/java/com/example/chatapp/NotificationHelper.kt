@@ -40,9 +40,21 @@ import androidx.core.content.ContextCompat.getSystemService
            .setStyle(mesStyle)
            .setAutoCancel(true)
 
+       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+           val mChannel = NotificationChannel(
+               channel_id,
+               channel_name, NotificationManager.IMPORTANCE_HIGH
+           )
+           mChannel.description = Channel_desc
+           val notificationManager = getSystemService(context,NotificationManager::class.java)
+           notificationManager?.createNotificationChannel(mChannel)
+           notificationManager?.cancel(2)
+       }
+
 
        val notificationManager = NotificationManagerCompat.from(context)
-       notificationManager.notify(i, builder.build())
+       notificationManager.notify(2, builder.build())
+
        i++
    }
 

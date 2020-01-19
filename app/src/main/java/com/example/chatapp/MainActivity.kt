@@ -29,16 +29,14 @@ import kotlinx.android.synthetic.main.list_item_view.*
 import kotlinx.android.synthetic.main.list_item_view.view.*
 import kotlin.jvm.java as java1
 
-class MainActivity : BaseSwipeToDismissActivity() {
+class MainActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.main_menu, menu)
         return true
     }
 
-    override fun isActivity(): Boolean {
-        return false
-    }
+
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         if (item != null) {
@@ -65,19 +63,36 @@ class MainActivity : BaseSwipeToDismissActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        if(FirebaseAuth.getInstance().currentUser == null){
+        if(FirebaseAuth.getInstance().currentUser == null ){
             val intent = Intent(this, LoginActivity::class.java1)
 
             startActivity(intent)
             finish()
         }
+        FirebaseDatabase.getInstance().reference.child("Users").child(FirebaseAuth.getInstance().uid!!).addListenerForSingleValueEvent(object :ValueEventListener{
+            override fun onCancelled(p0: DatabaseError) {
+
+            }
+
+            override fun onDataChange(p0: DataSnapshot) {
+               if (p0.value == null){
+                   val intent = Intent(this@MainActivity, LoginActivity::class.java1)
+
+                   startActivity(intent)
+                   finish()
+
+               }
+            }
+        })
+
          recyclerView = findViewById(R.id.latest_mes_recyclerview)
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.setHasFixedSize(true)
         val layoutManager  =  LinearLayoutManager(this)
         layoutManager.isSmoothScrollbarEnabled = true
+        layoutManager.reverseLayout =true
         recyclerView.layoutManager = layoutManager
+        layoutManager.setStackFromEnd(true)
 
         recyclerView.addItemDecoration(DividerItemDecoration(this,DividerItemDecoration.VERTICAL))
 
@@ -85,7 +100,6 @@ class MainActivity : BaseSwipeToDismissActivity() {
             val userData =  item as LatestMessageItem
             val intent = Intent(this, ChatLogActivity::class.java1)
             intent.putExtra(ContactsActivity.USER_KEY, userData.partUser)
-            overridePendingTransition(R.anim.fui_slide_in_right, R.anim.fui_slide_out_left)
             startActivity(intent)
         }
         recyclerView.adapter = adapter
@@ -97,6 +111,7 @@ class MainActivity : BaseSwipeToDismissActivity() {
     fun refreshRecyclerviewMessage(){
         adapter.clear()
         lastMessageMap.values.forEach{
+
             adapter.add(LatestMessageItem(it))
         }
 
@@ -107,17 +122,19 @@ class MainActivity : BaseSwipeToDismissActivity() {
 
             override fun onChildAdded(p0: DataSnapshot, p1: String?) {
                 val lastMes = p0.getValue(Message::class.java1) ?:return
-                adapter.add(LatestMessageItem(lastMes))
-                lastMessageMap[p0.key!!] = lastMes
-                refreshRecyclerviewMessage()
+
+               // adapter.add(LatestMessageItem(lastMes))
+
+                lastMessageMap.put(p0.key!!,lastMes)
+               refreshRecyclerviewMessage()
             }
 
             override fun onChildChanged(p0: DataSnapshot, p1: String?) {
                 val lastMes = p0.getValue(Message::class.java1) ?:return
-                adapter.add(LatestMessageItem(lastMes))
-                lastMessageMap[p0.key!!] = lastMes
+                //adapter.add(LatestMessageItem(lastMes))
+               // lastMessageMap.remove(p0.key!!)
+               lastMessageMap.put(p0.key!!,lastMes)
                 refreshRecyclerviewMessage()
-
             }
 
             override fun onCancelled(p0: DatabaseError) {
@@ -137,6 +154,19 @@ class MainActivity : BaseSwipeToDismissActivity() {
             startActivity(intent)
             finish()
         }
+
+        FirebaseDatabase.getInstance().reference.child("Users").child(FirebaseAuth.getInstance().uid!!).addListenerForSingleValueEvent(object :ValueEventListener{
+            override fun onCancelled(p0: DatabaseError) {
+
+            }
+
+            override fun onDataChange(p0: DataSnapshot) {
+                if (p0.value == null){
+                    finish()
+
+                }
+            }
+        })
     }
 }
 

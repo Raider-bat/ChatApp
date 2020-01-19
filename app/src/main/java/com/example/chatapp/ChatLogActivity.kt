@@ -6,6 +6,7 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
@@ -16,10 +17,12 @@ import com.google.firebase.database.FirebaseDatabase
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import kotlinx.android.synthetic.main.activity_chat_log.*
+import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.util.*
 
-class ChatLogActivity : BaseSwipeToDismissActivity() {
+class ChatLogActivity : AppCompatActivity() {
 
     lateinit var recyclerView: RecyclerView
     var adapter = GroupAdapter<GroupieViewHolder>()
@@ -28,9 +31,6 @@ class ChatLogActivity : BaseSwipeToDismissActivity() {
     val channel_name = "mes_name"
     val Channel_desc = "mes_notif"
 
-    override fun isActivity(): Boolean {
-        return true
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,17 +49,8 @@ class ChatLogActivity : BaseSwipeToDismissActivity() {
         recyclerView.setLayoutManager(layoutManager)
 
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val mChannel = NotificationChannel(
-                channel_id,
-                channel_name, NotificationManager.IMPORTANCE_HIGH
-            )
-            mChannel.description = Channel_desc
-            var notificationManager = getSystemService(NotificationManager::class.java)
-            notificationManager.createNotificationChannel(mChannel)
-            notificationManager.cancel(2)
-        }
-
+        val notificationManager = ContextCompat.getSystemService(this, NotificationManager::class.java)
+        notificationManager?.cancel(2)
 
            recyclerView.adapter = adapter
         writeMessage()
@@ -74,13 +65,15 @@ class ChatLogActivity : BaseSwipeToDismissActivity() {
 
                 recyclerView.smoothScrollToPosition(recyclerView.adapter!!.itemCount)
 
-                val mes = p0.getValue(MessageItem::class.java)
+                val mes = p0.getValue(Message::class.java)
                 if (mes != null){
+                    val dateFormat = SimpleDateFormat("HH:mm")
+
                     if (mes.uid == FirebaseAuth.getInstance().uid){
-                        adapter.add(MessageItemFrom(mes.name,mes.text,mes.time,mes.uid))
+                        adapter.add(MessageItemFrom(mes.name,mes.text,dateFormat.format(mes.time),mes.uid))
 
                     }else {
-                        adapter.add(MessageItem(mes.name, mes.text, mes.time, mes.uid))
+                        adapter.add(MessageItem(mes.name, mes.text, dateFormat.format(mes.time), mes.uid))
                     }
                 }
             }
@@ -88,19 +81,14 @@ class ChatLogActivity : BaseSwipeToDismissActivity() {
             override fun onCancelled(p0: DatabaseError) {
                 return
             }
-
             override fun onChildMoved(p0: DataSnapshot, p1: String?) {
                 return
             }
-
             override fun onChildChanged(p0: DataSnapshot, p1: String?) {
                 return
             }
-
             override fun onChildRemoved(p0: DataSnapshot) {
-
                 adapter.removeGroupAtAdapterPosition(recyclerView.adapter!!.itemCount-1)
-
                 return
             }
         })
@@ -118,11 +106,9 @@ class ChatLogActivity : BaseSwipeToDismissActivity() {
 
             val lEditText = chat_log_edit_message.text.toString().trim()
             if (lEditText.length != 0 ) {
-                //  recyclerView.smoothScrollToPosition(recyclerView.adapter!!.itemCount)
 
-                val currentDateTime = LocalDateTime.now()
-                val timeNow = currentDateTime.format(DateTimeFormatter.ofPattern("HH:mm"))
-                val messageData = Message(user_nameInDB, lEditText, timeNow, myUid!!, user.uid!!)
+                val dataTime = Date().time
+                val messageData = Message(user_nameInDB, lEditText, dataTime, myUid!!, user.uid!!)
                 FirebaseDatabase.getInstance().reference.child("Chats").child(myUid!!).child(user.uid!!).push().setValue(messageData)
                 if (myUid != user.uid){
                 FirebaseDatabase.getInstance().reference.child("Chats").child(user.uid!!).child(myUid!!).push().setValue(messageData)

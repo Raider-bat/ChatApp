@@ -25,8 +25,6 @@ class ContactsActivity : AppCompatActivity() {
         layoutManager.isSmoothScrollbarEnabled = true
         recyclerView.layoutManager = layoutManager
 
-
-
         readContactsFromDB()
         recyclerView.adapter = adapter
     }
@@ -36,46 +34,12 @@ class ContactsActivity : AppCompatActivity() {
     }
    private fun readContactsFromDB() {
 
-       /* FirebaseDatabase.getInstance().reference.child("Users").addListenerForSingleValueEvent(object: ValueEventListener{
-
-            override fun onCancelled(p0: DatabaseError) {
-
-            }
-
-            override fun onDataChange(p0: DataSnapshot) {
-                p0.children.forEach{
-
-                    val user = it.getValue(User::class.java)
-                    if (user != null){
-
-                        adapter.add(ContactItem(user))
-                    }
-                }
-
-                adapter.setOnItemClickListener { item, view ->
-                    val userItem = item as ContactItem
-                    val intent = Intent(view.context, ChatLogActivity::class.java)
-                    intent.putExtra(ContactsActivity.USER_KEY, userItem.user)
-
-                    startActivity(intent)
-                    finish()
-
-
-                }
-            }
-        }) */
-
        FirebaseDatabase.getInstance().reference.child("Users").addChildEventListener(object : ChildEventListener{
            override fun onCancelled(p0: DatabaseError) {
-
            }
-
            override fun onChildMoved(p0: DataSnapshot, p1: String?) {
-
            }
-
            override fun onChildChanged(p0: DataSnapshot, p1: String?) {
-
            }
 
            override fun onChildAdded(p0: DataSnapshot, p1: String?) {
@@ -92,10 +56,8 @@ class ContactsActivity : AppCompatActivity() {
                    startActivity(intent)
                    finish()
 
-
                }
            }
-
            override fun onChildRemoved(p0: DataSnapshot) {
 
            }

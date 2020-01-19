@@ -8,6 +8,7 @@ import com.google.firebase.database.ValueEventListener
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Item
 import kotlinx.android.synthetic.main.latest_mes_item.view.*
+import java.text.SimpleDateFormat
 
 class LatestMessageItem(val message: Message) : Item<GroupieViewHolder>(){
 
@@ -23,7 +24,7 @@ class LatestMessageItem(val message: Message) : Item<GroupieViewHolder>(){
         }else{
             chatPartId = message.toUid
         }
-        FirebaseDatabase.getInstance().reference.child("Users").child(chatPartId).addListenerForSingleValueEvent(object: ValueEventListener{
+        FirebaseDatabase.getInstance().reference.child("Users").child(chatPartId).addValueEventListener(object: ValueEventListener{
             override fun onCancelled(p0: DatabaseError) {
 
             }
@@ -40,6 +41,7 @@ class LatestMessageItem(val message: Message) : Item<GroupieViewHolder>(){
         }else{
             viewHolder.itemView.latest_mes_text.text =  message.text
         }
-        viewHolder.itemView.latest_mes_time.text = message.time
+        val dateFormat = SimpleDateFormat("HH:mm")
+        viewHolder.itemView.latest_mes_time.text = dateFormat.format(message.time)
     }
 }

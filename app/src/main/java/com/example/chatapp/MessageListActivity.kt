@@ -24,6 +24,7 @@ import com.xwray.groupie.GroupieViewHolder
 import kotlinx.android.synthetic.main.activity_message_list.*
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.util.*
 
 class MessageListActivity : AppCompatActivity() {
 
@@ -155,12 +156,10 @@ class MessageListActivity : AppCompatActivity() {
             if (lEditText.length != 0 ) {
               //  recyclerView.smoothScrollToPosition(recyclerView.adapter!!.itemCount)
 
-                val currentDateTime = LocalDateTime.now()
-                val timeNow = currentDateTime.format(DateTimeFormatter.ofPattern("HH:mm"))
 
                 FirebaseDatabase.getInstance().getReference("Message").push().setValue(
                     Message(
-                        user_nameInDB, lEditText, timeNow,uid!!,""
+                        user_nameInDB, lEditText, Date().time,uid!!,""
                     )
                 )
                 edit_message.setText("")
