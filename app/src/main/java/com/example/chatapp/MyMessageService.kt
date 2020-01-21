@@ -1,5 +1,6 @@
 package com.example.chatapp
 
+import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
@@ -17,7 +18,7 @@ class MyMessageService : FirebaseMessagingService() {
         val phoneNum = p0.data.getValue("phone")
         val token = p0.data.getValue("us_token")
 
-            NotificationHelper().displayNotify(applicationContext, title, body,uid,token,phoneNum)
+        NotificationHelper().displayNotify(applicationContext, title, body,uid,token,phoneNum)
 
     }
 }

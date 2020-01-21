@@ -2,10 +2,13 @@ package com.example.chatapp
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.content.Context
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageButton
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -16,7 +19,9 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
+import hani.momanii.supernova_emoji_library.Actions.EmojIconActions
 import kotlinx.android.synthetic.main.activity_chat_log.*
+import kotlinx.android.synthetic.main.activity_main.*
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -31,7 +36,6 @@ class ChatLogActivity : AppCompatActivity() {
     val channel_name = "mes_name"
     val Channel_desc = "mes_notif"
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat_log)
@@ -39,7 +43,6 @@ class ChatLogActivity : AppCompatActivity() {
 
 
         supportActionBar?.title = user.userName
-
         recyclerView = findViewById(R.id.chat_log_list_message)
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.setHasFixedSize(true)
@@ -53,8 +56,16 @@ class ChatLogActivity : AppCompatActivity() {
         notificationManager?.cancel(2)
 
            recyclerView.adapter = adapter
+        emojiSetting()
         writeMessage()
         lisMessage()
+    }
+
+    private fun emojiSetting() {
+        val emojiButton = findViewById<ImageButton>(R.id.emoji_button)
+        val emojiIcomAction = EmojIconActions(this,chat_log_activity, chat_log_edit_message,emojiButton,"#777777","#2C2C2C","#2C2C2C")
+        emojiIcomAction.setIconsIds(R.drawable.ic_keyboard_grey_500_24dp,R.drawable.ic_insert_emoticon_grey_500_24dp)
+        emojiIcomAction.ShowEmojIcon()
     }
 
     private fun lisMessage(){
@@ -124,10 +135,12 @@ class ChatLogActivity : AppCompatActivity() {
     }
 
     override fun onStart() {
+
         super.onStart()
     }
 
     override fun onStop() {
+
         super.onStop()
     }
 }

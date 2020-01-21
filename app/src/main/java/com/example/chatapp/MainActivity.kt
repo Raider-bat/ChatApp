@@ -110,7 +110,8 @@ class MainActivity : AppCompatActivity() {
     val lastMessageMap = HashMap<String, Message>()
     fun refreshRecyclerviewMessage(){
         adapter.clear()
-        lastMessageMap.values.forEach{
+
+        lastMessageMap.toSortedMap().values.forEach{
 
             adapter.add(LatestMessageItem(it))
         }
@@ -132,8 +133,8 @@ class MainActivity : AppCompatActivity() {
             override fun onChildChanged(p0: DataSnapshot, p1: String?) {
                 val lastMes = p0.getValue(Message::class.java1) ?:return
                 //adapter.add(LatestMessageItem(lastMes))
-               // lastMessageMap.remove(p0.key!!)
-               lastMessageMap.put(p0.key!!,lastMes)
+                //lastMessageMap.remove(p0.key!!)
+                     lastMessageMap.put(p0.key!!,lastMes)
                 refreshRecyclerviewMessage()
             }
 

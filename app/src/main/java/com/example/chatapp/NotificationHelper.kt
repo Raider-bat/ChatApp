@@ -18,7 +18,7 @@ import androidx.core.content.ContextCompat.getSystemService
     val Channel_desc = "mes_notif"
      var i = 0
 
-   @Suppress("DEPRECATION")
+
    public fun displayNotify(context: Context, title: String?, body:String?, uid: String?, token: String?, phoneNum: String?) {
 
 

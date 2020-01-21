@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:emojicon="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
 
     android:layout_width="wrap_content"
@@ -42,7 +43,7 @@
 
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
+    <hani.momanii.supernova_emoji_library.Helper.EmojiconTextView
         android:id="@+id/message_text"
 
         android:layout_width="wrap_content"
@@ -51,6 +52,7 @@
         android:layout_marginTop="4dp"
         android:fontFamily="sans-serif"
         android:autoLink="web"
+        emojicon:emojiconSize="18sp"
         android:linksClickable="true"
         android:paddingRight="10dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
@@ -61,7 +63,7 @@
         app:layout_constraintTop_toBottomOf="@id/message_user">
 
 
-    </TextView>
+    </hani.momanii.supernova_emoji_library.Helper.EmojiconTextView>
 
 
 

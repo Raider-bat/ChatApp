@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ChatLogActivity"
-    android:background="@color/activityBgdColor">
+    android:background="@color/activityBgdColor"
+    android:id="@+id/chat_log_activity">
 
 
     <androidx.recyclerview.widget.RecyclerView
@@ -23,18 +24,19 @@
     </androidx.recyclerview.widget.RecyclerView>
 
 
-    <EditText
+    <hani.momanii.supernova_emoji_library.Helper.EmojiconEditText
         android:id="@+id/chat_log_edit_message"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:backgroundTint="#00B1B1B1"
         android:cursorVisible="true"
+        android:textCursorDrawable="@drawable/color_cursor"
         android:hint="Cообщение"
         android:inputType="textMultiLine|textCapSentences"
         android:isScrollContainer="true"
         android:maxLines="5"
         android:minLines="1"
-        android:paddingLeft="30dp"
+        android:paddingLeft="45dp"
         android:paddingRight="45dp"
         android:paddingBottom="15dp"
         android:scrollbars="vertical"
@@ -42,13 +44,24 @@
         android:textColor="#FFFFFF"
         android:textColorHint="#CBCFCFCF"
         android:textColorLink="#38B5EB"
-        android:textCursorDrawable="@android:color/background_light"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-    </EditText>
+    </hani.momanii.supernova_emoji_library.Helper.EmojiconEditText>
+
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:id="@+id/emoji_button"
+        android:layout_width="40dp"
+        android:layout_height="51dp"
+        android:layout_marginBottom="1dp"
+        android:background="#00FFFFFF"
+        android:src="@drawable/ic_insert_emoticon_grey_500_24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+    </androidx.appcompat.widget.AppCompatImageButton>
 
     <ImageButton
         android:id="@+id/chat_log_send_Button"
