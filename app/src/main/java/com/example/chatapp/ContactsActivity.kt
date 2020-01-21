@@ -55,11 +55,9 @@ class ContactsActivity : AppCompatActivity() {
 
                    startActivity(intent)
                    finish()
-
                }
            }
            override fun onChildRemoved(p0: DataSnapshot) {
-
            }
        })
    }

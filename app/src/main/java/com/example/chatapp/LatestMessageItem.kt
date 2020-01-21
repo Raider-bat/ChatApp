@@ -26,7 +26,6 @@ class LatestMessageItem(val message: Message) : Item<GroupieViewHolder>(){
         }
         FirebaseDatabase.getInstance().reference.child("Users").child(chatPartId).addValueEventListener(object: ValueEventListener{
             override fun onCancelled(p0: DatabaseError) {
-
             }
 
             override fun onDataChange(p0: DataSnapshot) {

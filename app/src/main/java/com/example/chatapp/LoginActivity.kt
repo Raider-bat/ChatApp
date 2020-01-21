@@ -23,12 +23,9 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-
         auth = FirebaseAuth.getInstance()
 
-
         login_button.setOnClickListener{
-
 
             var numberPhone = number_phone.text.toString().trim()
             if (numberPhone.startsWith("7")){
@@ -40,18 +37,11 @@ class LoginActivity : AppCompatActivity() {
             if ( numberPhone.length >10) {
                 sendVerificationCode(numberPhone)
             }
-
-
-
         }
-
-
-
 
         verify_phone_button.setOnClickListener{
             verifySignInCode()
         }
-
     }
 
 
@@ -83,16 +73,6 @@ class LoginActivity : AppCompatActivity() {
                 ) {
                     verificationIdCode = verificationId
                     Toast.makeText(this@LoginActivity,"Сообщение отправлено..", Toast.LENGTH_SHORT).show()
-                    // The SMS verification code has been sent to the provided phone number, we
-                    // now need to ask the user to enter the code and then construct a credential
-                    // by combining the code with a verification ID.
-
-
-                    // Save verification ID and resending token so we can use them later
-                    var   storedVerificationId = verificationId
-                    var   resendToken = token
-
-                    // ...
                 }
             })
 
@@ -112,26 +92,28 @@ class LoginActivity : AppCompatActivity() {
 
                     val userName: String = user_name.text.toString().trim()
 
-
                     FirebaseDatabase.getInstance().reference.child("Users").child(FirebaseAuth.getInstance().currentUser!!.uid).addListenerForSingleValueEvent(object : ValueEventListener{
                         override fun onCancelled(p0: DatabaseError) {
-
                         }
 
                         override fun onDataChange(p0: DataSnapshot) {
-                                if (userName.isNotEmpty()){
+                            if (userName.isNotEmpty()){
 
-                                    val updateName =  UserProfileChangeRequest.Builder().setDisplayName(userName).build()
-                                    FirebaseAuth.getInstance().currentUser?.updateProfile(updateName)
-                                    FirebaseDatabase.getInstance().getReference("Users").child(FirebaseAuth.getInstance().currentUser!!.uid).
-                                        setValue(User(FirebaseAuth.getInstance().currentUser?.phoneNumber,
-                                        userName,FirebaseAuth.getInstance().currentUser?.uid, FirebaseInstanceId.getInstance().getToken()))
+                                val updateName =  UserProfileChangeRequest.Builder().setDisplayName(userName).build()
+                                FirebaseAuth.getInstance().currentUser?.updateProfile(updateName)
+                                FirebaseDatabase.getInstance().getReference("Users").child(FirebaseAuth.getInstance().currentUser!!.uid)
+                                    .setValue(User(FirebaseAuth.getInstance().currentUser?.phoneNumber,
+                                        userName,
+                                        FirebaseAuth.getInstance().currentUser?.uid,
+                                        FirebaseInstanceId.getInstance().getToken()))
 
-                                }else{
-                                    FirebaseDatabase.getInstance().getReference("Users").child(FirebaseAuth.getInstance().currentUser!!.uid)
-                                        .setValue(User(FirebaseAuth.getInstance().currentUser?.phoneNumber,
-                                    FirebaseAuth.getInstance().currentUser?.displayName,FirebaseAuth.getInstance().currentUser?.uid, FirebaseInstanceId.getInstance().getToken()))
-                               }
+                            }else{
+                                FirebaseDatabase.getInstance().getReference("Users").child(FirebaseAuth.getInstance().currentUser!!.uid)
+                                    .setValue(User(FirebaseAuth.getInstance().currentUser?.phoneNumber,
+                                        FirebaseAuth.getInstance().currentUser?.displayName,
+                                        FirebaseAuth.getInstance().currentUser?.uid,
+                                        FirebaseInstanceId.getInstance().getToken()))
+                            }
                         }
                     })
                     if (userName.isNotEmpty()){
@@ -140,20 +122,16 @@ class LoginActivity : AppCompatActivity() {
                         FirebaseAuth.getInstance().currentUser?.updateProfile(updateName)
                     }
                     // Sign in success, update UI with the signed-in user's information
-
                     val intent = Intent(this, MainActivity::class.java)
                     startActivity(intent)
                     finish()
 
-
-                    // ...
                 } else {
                     // Sign in failed, display a message and update the UI
 
                     if (task.exception is FirebaseAuthInvalidCredentialsException) {
                         // The verification code entered was invalid
                         Toast.makeText(this@LoginActivity,"Неверный код", Toast.LENGTH_SHORT).show()
-
 
                     }
                 }

@@ -140,7 +140,6 @@ class MessageListActivity : AppCompatActivity() {
         })
    }
 
-
     //Запись сообщения в базу данных
     private fun writeMessage() {
 
@@ -166,8 +165,6 @@ class MessageListActivity : AppCompatActivity() {
             }
         })
     }
-
-
 
     override fun onStart() {
         super.onStart()

@@ -26,6 +26,7 @@ import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
+import kotlin.properties.Delegates
 
 class ChatLogActivity : AppCompatActivity() {
 
@@ -41,7 +42,6 @@ class ChatLogActivity : AppCompatActivity() {
         setContentView(R.layout.activity_chat_log)
          user = intent.getParcelableExtra<User>(ContactsActivity.USER_KEY)
 
-
         supportActionBar?.title = user.userName
         recyclerView = findViewById(R.id.chat_log_list_message)
         recyclerView.layoutManager = LinearLayoutManager(this)
@@ -50,7 +50,6 @@ class ChatLogActivity : AppCompatActivity() {
         layoutManager.setStackFromEnd(true)
         layoutManager.isSmoothScrollbarEnabled = true
         recyclerView.setLayoutManager(layoutManager)
-
 
         val notificationManager = ContextCompat.getSystemService(this, NotificationManager::class.java)
         notificationManager?.cancel(2)
@@ -69,6 +68,7 @@ class ChatLogActivity : AppCompatActivity() {
     }
 
     private fun lisMessage(){
+        var dateLatestMessage : Int = 0
         val myUid = FirebaseAuth.getInstance().uid
         FirebaseDatabase.getInstance().reference.child("Chats").child(myUid!!).child(user.uid!!).addChildEventListener(object :
             ChildEventListener {
@@ -78,14 +78,20 @@ class ChatLogActivity : AppCompatActivity() {
 
                 val mes = p0.getValue(Message::class.java)
                 if (mes != null){
-                    val dateFormat = SimpleDateFormat("HH:mm")
+                    val dateFormatForMessage = SimpleDateFormat("HH:mm")
+                    val dateForDialog = SimpleDateFormat("d MMMM")
+                    val dateNowMessage = SimpleDateFormat("d").format(mes.time).toInt()
+                    if (dateNowMessage - dateLatestMessage !=0){
+                        adapter.add(MessageDateItem(dateForDialog.format(mes.time)))
+                    }
 
                     if (mes.uid == FirebaseAuth.getInstance().uid){
-                        adapter.add(MessageItemFrom(mes.name,mes.text,dateFormat.format(mes.time),mes.uid))
+                        adapter.add(MessageItemFrom(mes.name,mes.text,dateFormatForMessage.format(mes.time),mes.uid))
 
                     }else {
-                        adapter.add(MessageItem(mes.name, mes.text, dateFormat.format(mes.time), mes.uid))
+                        adapter.add(MessageItem(mes.name, mes.text, dateFormatForMessage.format(mes.time), mes.uid))
                     }
+                     dateLatestMessage = SimpleDateFormat("d").format(mes.time).toInt()
                 }
             }
 
@@ -130,17 +136,5 @@ class ChatLogActivity : AppCompatActivity() {
                 FirebaseDatabase.getInstance().reference.child("LatestMessage").child(user.uid!!).child(myUid!!).setValue(messageData)
             }
         })
-
-
-    }
-
-    override fun onStart() {
-
-        super.onStart()
-    }
-
-    override fun onStop() {
-
-        super.onStop()
     }
 }

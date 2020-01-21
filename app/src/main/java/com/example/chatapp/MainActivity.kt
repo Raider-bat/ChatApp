@@ -115,7 +115,6 @@ class MainActivity : AppCompatActivity() {
 
             adapter.add(LatestMessageItem(it))
         }
-
     }
     private fun listenLastMessage() {
         val MyUid = FirebaseAuth.getInstance().uid

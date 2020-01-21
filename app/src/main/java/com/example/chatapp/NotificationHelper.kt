@@ -21,8 +21,7 @@ import androidx.core.content.ContextCompat.getSystemService
 
    public fun displayNotify(context: Context, title: String?, body:String?, uid: String?, token: String?, phoneNum: String?) {
 
-
-       var mesStyle = NotificationCompat.MessagingStyle(title!!)
+       val mesStyle = NotificationCompat.MessagingStyle(title!!)
        mesStyle.addMessage(body, System.currentTimeMillis(), title)
        val user: User = User(phoneNum,title,uid,token)
 
@@ -54,16 +53,6 @@ import androidx.core.content.ContextCompat.getSystemService
 
        val notificationManager = NotificationManagerCompat.from(context)
        notificationManager.notify(2, builder.build())
-
        i++
    }
-
-
-
-
-
-
-
-
-
 }

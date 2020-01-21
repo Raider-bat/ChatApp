@@ -23,7 +23,6 @@ class MessageAdapter(options: FirebaseRecyclerOptions<Message?>) :
 
     }
 
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MessageViewHolder {
         val view =
             LayoutInflater.from(parent.context).inflate(R.layout.list_item_view, parent, false)
@@ -35,7 +34,6 @@ class MessageAdapter(options: FirebaseRecyclerOptions<Message?>) :
         var mes_user: TextView
         var mes_time: TextView
         var mes_text: TextView
-
 
         init {
             mes_user = itemView.findViewById(R.id.message_user)

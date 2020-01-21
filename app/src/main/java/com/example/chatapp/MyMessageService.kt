@@ -11,7 +11,6 @@ class MyMessageService : FirebaseMessagingService() {
     override fun onMessageReceived(p0: RemoteMessage) {
         super.onMessageReceived(p0)
 
-
         val title = p0.data.getValue("title")
         val body = p0.data.getValue("body")
         val uid = p0.data.getValue("uid")
