@@ -19,8 +19,6 @@ class MessageAdapter(options: FirebaseRecyclerOptions<Message?>) :
         holder.mes_text.text = model.text
         holder.mes_user.text = model.name
         holder.mes_time.text = model.time.toString()
-
-
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MessageViewHolder {

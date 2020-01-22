@@ -14,6 +14,5 @@ class MessageItemFrom(var name: String?, var text: String, var time:String?, var
 
     override fun getLayout(): Int {
         return R.layout.list_item_view_from
-
     }
 }

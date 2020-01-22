@@ -18,7 +18,6 @@ import androidx.core.content.ContextCompat.getSystemService
     val Channel_desc = "mes_notif"
      var i = 0
 
-
    public fun displayNotify(context: Context, title: String?, body:String?, uid: String?, token: String?, phoneNum: String?) {
 
        val mesStyle = NotificationCompat.MessagingStyle(title!!)
@@ -49,7 +48,6 @@ import androidx.core.content.ContextCompat.getSystemService
            notificationManager?.createNotificationChannel(mChannel)
            notificationManager?.cancel(2)
        }
-
 
        val notificationManager = NotificationManagerCompat.from(context)
        notificationManager.notify(2, builder.build())

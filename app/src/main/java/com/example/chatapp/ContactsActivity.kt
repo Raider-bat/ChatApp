@@ -62,5 +62,14 @@ class ContactsActivity : AppCompatActivity() {
        })
    }
 
+    override fun onStart() {
+        super.onStart()
+        UserStatusController().userStatusWriter("в сети")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        UserStatusController().userStatusWriter("offline")
+    }
 
 }

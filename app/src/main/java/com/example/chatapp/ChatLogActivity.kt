@@ -1,38 +1,29 @@
 package com.example.chatapp
 
-import android.app.NotificationChannel
+
 import android.app.NotificationManager
-import android.content.Context
-import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageButton
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.ChildEventListener
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.*
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import hani.momanii.supernova_emoji_library.Actions.EmojIconActions
 import kotlinx.android.synthetic.main.activity_chat_log.*
-import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.contact_item.view.*
 import java.text.SimpleDateFormat
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import java.util.*
-import kotlin.properties.Delegates
 
 class ChatLogActivity : AppCompatActivity() {
 
     lateinit var recyclerView: RecyclerView
     var adapter = GroupAdapter<GroupieViewHolder>()
-     lateinit var user : User
+    lateinit var user : User
     val channel_id ="mes_id"
     val channel_name = "mes_name"
     val Channel_desc = "mes_notif"
@@ -43,21 +34,44 @@ class ChatLogActivity : AppCompatActivity() {
          user = intent.getParcelableExtra<User>(ContactsActivity.USER_KEY)
 
         supportActionBar?.title = user.userName
+        userStatusAsActionBarSubTitle()
         recyclerView = findViewById(R.id.chat_log_list_message)
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.setHasFixedSize(true)
         val layoutManager  =  LinearLayoutManager(this)
-        layoutManager.setStackFromEnd(true)
+        layoutManager.stackFromEnd = true
         layoutManager.isSmoothScrollbarEnabled = true
-        recyclerView.setLayoutManager(layoutManager)
+        recyclerView.layoutManager = layoutManager
 
         val notificationManager = ContextCompat.getSystemService(this, NotificationManager::class.java)
         notificationManager?.cancel(2)
 
-           recyclerView.adapter = adapter
+        recyclerView.adapter = adapter
+
         emojiSetting()
         writeMessage()
         lisMessage()
+    }
+
+    private fun userStatusAsActionBarSubTitle() {
+        FirebaseDatabase.getInstance().reference.child("Users").child(user.uid!!).child("UserStatus").addValueEventListener(object :
+            ValueEventListener {
+            override fun onCancelled(p0: DatabaseError) {
+            }
+
+            override fun onDataChange(p0: DataSnapshot) {
+
+                val userStatus = p0.getValue(UserStatus::class.java)?:return
+                val dateNowMessage ="был(а) в "+ SimpleDateFormat("HH:mm").format(userStatus.time)?:return
+
+                val statusNow = if (userStatus.state =="в сети"){
+                    userStatus.state
+                }else{
+                    dateNowMessage
+                }
+                supportActionBar?.subtitle = statusNow
+            }
+        })
     }
 
     private fun emojiSetting() {
@@ -113,28 +127,38 @@ class ChatLogActivity : AppCompatActivity() {
 
     private fun writeMessage(){
 
-        val myUid = FirebaseAuth.getInstance().uid
-        chat_log_send_Button.setOnClickListener(View.OnClickListener {
-            var user_nameInDB = FirebaseAuth.getInstance().currentUser?.displayName
+        val myUid = FirebaseAuth.getInstance().uid?:return
+        chat_log_send_Button.setOnClickListener{
+            var userNameInDB = FirebaseAuth.getInstance().currentUser?.displayName
 
-            if (user_nameInDB == null){
-                user_nameInDB = FirebaseAuth.getInstance().currentUser?.phoneNumber
+            if (userNameInDB == null){
+                userNameInDB = FirebaseAuth.getInstance().currentUser?.phoneNumber
             }
 
             val lEditText = chat_log_edit_message.text.toString().trim()
-            if (lEditText.length != 0 ) {
+            if (lEditText.isNotEmpty()) {
 
                 val dataTime = Date().time
-                val messageData = Message(user_nameInDB, lEditText, dataTime, myUid!!, user.uid!!)
-                FirebaseDatabase.getInstance().reference.child("Chats").child(myUid!!).child(user.uid!!).push().setValue(messageData)
+                val messageData = Message(userNameInDB, lEditText, dataTime, myUid, user.uid!!)
+                FirebaseDatabase.getInstance().reference.child("Chats").child(myUid).child(user.uid!!).push().setValue(messageData)
                 if (myUid != user.uid){
-                FirebaseDatabase.getInstance().reference.child("Chats").child(user.uid!!).child(myUid!!).push().setValue(messageData)
+                FirebaseDatabase.getInstance().reference.child("Chats").child(user.uid!!).child(myUid).push().setValue(messageData)
                 }
                 chat_log_edit_message.setText("")
 
-                FirebaseDatabase.getInstance().reference.child("LatestMessage").child(myUid!!).child(user.uid!!).setValue(messageData)
-                FirebaseDatabase.getInstance().reference.child("LatestMessage").child(user.uid!!).child(myUid!!).setValue(messageData)
+                FirebaseDatabase.getInstance().reference.child("LatestMessage").child(myUid).child(user.uid!!).setValue(messageData)
+                FirebaseDatabase.getInstance().reference.child("LatestMessage").child(user.uid!!).child(myUid).setValue(messageData)
             }
-        })
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        UserStatusController().userStatusWriter("в сети")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        UserStatusController().userStatusWriter("offline")
     }
 }

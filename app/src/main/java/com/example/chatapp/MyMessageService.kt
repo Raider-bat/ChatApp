@@ -17,7 +17,8 @@ class MyMessageService : FirebaseMessagingService() {
         val phoneNum = p0.data.getValue("phone")
         val token = p0.data.getValue("us_token")
 
-        NotificationHelper().displayNotify(applicationContext, title, body,uid,token,phoneNum)
-
+        if (FirebaseAuth.getInstance().currentUser != null){
+            NotificationHelper().displayNotify(applicationContext, title, body,uid,token,phoneNum)
+        }
     }
 }

@@ -10,7 +10,7 @@ import com.xwray.groupie.Item
 import kotlinx.android.synthetic.main.latest_mes_item.view.*
 import java.text.SimpleDateFormat
 
-class LatestMessageItem(val message: Message) : Item<GroupieViewHolder>(){
+class LatestMessageItem(private val message: Message) : Item<GroupieViewHolder>(){
 
     var partUser : User? = null
     override fun getLayout(): Int {
@@ -18,11 +18,10 @@ class LatestMessageItem(val message: Message) : Item<GroupieViewHolder>(){
     }
 
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
-        val chatPartId: String
-        if (message.toUid == FirebaseAuth.getInstance().uid){
-            chatPartId = message.uid
+        val chatPartId = if (message.toUid == FirebaseAuth.getInstance().uid){
+            message.uid
         }else{
-            chatPartId = message.toUid
+            message.toUid
         }
         FirebaseDatabase.getInstance().reference.child("Users").child(chatPartId).addValueEventListener(object: ValueEventListener{
             override fun onCancelled(p0: DatabaseError) {
@@ -35,7 +34,7 @@ class LatestMessageItem(val message: Message) : Item<GroupieViewHolder>(){
         })
 
         if (message.text.length> 44){
-            var len = message.text.length - 42
+            val len = message.text.length - 42
             viewHolder.itemView.latest_mes_text.text =  message.text.dropLast(len) +"..."
         }else{
             viewHolder.itemView.latest_mes_text.text =  message.text

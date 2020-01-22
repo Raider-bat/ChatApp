@@ -14,15 +14,26 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="58dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginBottom="3dp"
         android:fontFamily="sans-serif"
         android:text="Raider"
         android:textAllCaps="false"
         android:textColor="#FFFFFF"
         android:textSize="19sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/contact_state"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/contact_state"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:text="неизвестно"
+        android:textColor="#A4FFFFFF"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/contact_name" />
 </androidx.constraintlayout.widget.ConstraintLayout>

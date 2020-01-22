@@ -1,17 +1,12 @@
 package com.example.chatapp
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
+
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.ChildEventListener
@@ -22,25 +17,22 @@ import com.google.firebase.messaging.FirebaseMessaging
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import kotlinx.android.synthetic.main.activity_message_list.*
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import java.util.*
 
+
+/*
+* This is activity not working in this app
+*
+ */
 class MessageListActivity : AppCompatActivity() {
 
     lateinit var recyclerView: RecyclerView
     lateinit var adapter: MessageAdapter
-
     var adapterg = GroupAdapter<GroupieViewHolder>()
-
-
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_message_list)
-
-
 
         FirebaseMessaging.getInstance().subscribeToTopic("Message")
         FirebaseMessaging.getInstance().subscribeToTopic("MyMessage")
@@ -50,24 +42,9 @@ class MessageListActivity : AppCompatActivity() {
         val layoutManager  =  LinearLayoutManager(this)
 
 
-      /*  recyclerView.addOnLayoutChangeListener(View.OnLayoutChangeListener { v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom  ->
-            if (bottom< oldBottom){
-
-                recyclerView.post {
-                    recyclerView.scrollToPosition(recyclerView.adapter!!.itemCount-1)
-
-
-                }
-            }
-
-
-        }) */
-
-
         layoutManager.setStackFromEnd(true)
         layoutManager.isSmoothScrollbarEnabled = true
         recyclerView.setLayoutManager(layoutManager)
-
 
             // Вытаскиваем сообщения из БД
         val options = FirebaseRecyclerOptions.Builder<Message>()
@@ -82,10 +59,7 @@ class MessageListActivity : AppCompatActivity() {
             }
             .build()
 
-
         recyclerView.adapter = adapterg
-
-
         adapter = MessageAdapter(options)
         adapter.startListening()
 
@@ -93,10 +67,6 @@ class MessageListActivity : AppCompatActivity() {
         writeMessage()
         //Слушатель изменения в базе данных
         lisMessage()
-
-
-
-
        // FirebaseDatabase.getInstance().setPersistenceCacheSizeBytes(50000000)
         //FirebaseDatabase.getInstance().setPersistenceEnabled(true)
     }
