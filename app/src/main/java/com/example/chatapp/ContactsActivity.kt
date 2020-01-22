@@ -71,5 +71,4 @@ class ContactsActivity : AppCompatActivity() {
         super.onPause()
         UserStatusController().userStatusWriter("offline")
     }
-
 }

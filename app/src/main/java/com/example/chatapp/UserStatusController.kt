@@ -16,6 +16,5 @@ class UserStatusController {
 
         FirebaseDatabase.getInstance().reference.child("Users").child(myUid).child("UserStatus").setValue(UserStatus(
             time,state))
-
     }
 }

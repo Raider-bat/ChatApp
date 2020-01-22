@@ -152,6 +152,3 @@ class MainActivity : AppCompatActivity() {
         UserStatusController().userStatusWriter("offline")
     }
 }
-
-
-
