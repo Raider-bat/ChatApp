@@ -57,11 +57,11 @@ class MainActivity : AppCompatActivity() {
             finish()
         }
 
-        FirebaseDatabase.getInstance().reference.child("Users").child(FirebaseAuth.getInstance().uid!!).addListenerForSingleValueEvent(object :ValueEventListener{
+        FirebaseDatabase.getInstance().reference.child("Users").child(FirebaseAuth.getInstance().uid!!).child("userName").addListenerForSingleValueEvent(object :ValueEventListener{
             override fun onCancelled(p0: DatabaseError) {}
 
             override fun onDataChange(p0: DataSnapshot) {
-               if (p0.value == null){
+               if (p0.value == null || p0.value == ""){
                    val intent = Intent(this@MainActivity, LoginActivity::class.java1)
 
                    startActivity(intent)
@@ -93,8 +93,7 @@ class MainActivity : AppCompatActivity() {
     val lastMessageMap = HashMap<String, Message>()
     fun refreshRecyclerviewMessage(){
         adapter.clear()
-
-        lastMessageMap.values.forEach{
+        lastMessageMap.toSortedMap().values.forEach{
             adapter.add(LatestMessageItem(it))
         }
     }
@@ -111,7 +110,7 @@ class MainActivity : AppCompatActivity() {
 
             override fun onChildChanged(p0: DataSnapshot, p1: String?) {
                 val lastMes = p0.getValue(Message::class.java1) ?:return
-                //adapter.add(LatestMessageItem(lastMes))
+              //  adapter.add(LatestMessageItem(lastMes))
                 lastMessageMap[p0.key!!] = lastMes
                 refreshRecyclerviewMessage()
             }
@@ -131,11 +130,11 @@ class MainActivity : AppCompatActivity() {
             finish()
         }
 
-        FirebaseDatabase.getInstance().reference.child("Users").child(FirebaseAuth.getInstance().uid!!).addListenerForSingleValueEvent(object :ValueEventListener{
+        FirebaseDatabase.getInstance().reference.child("Users").child(FirebaseAuth.getInstance().uid!!).child("userName").addListenerForSingleValueEvent(object :ValueEventListener{
             override fun onCancelled(p0: DatabaseError) {
             }
             override fun onDataChange(p0: DataSnapshot) {
-                if (p0.value == null){
+                if (p0.value == null || p0.value == ""){
                     finish()
                 }
             }

@@ -29,10 +29,17 @@ class LatestMessageItem(private val message: Message) : Item<GroupieViewHolder>(
 
             override fun onDataChange(p0: DataSnapshot) {
                 partUser = p0.getValue(User::class.java)
-                viewHolder.itemView.latest_mes_user_name.text = partUser?.userName
+
+            }
+        })
+        FirebaseDatabase.getInstance().reference.child("Users").child(chatPartId).child("userName").addListenerForSingleValueEvent(object : ValueEventListener{
+            override fun onCancelled(p0: DatabaseError) {}
+            override fun onDataChange(p0: DataSnapshot) {
+                viewHolder.itemView.latest_mes_user_name.text = p0.value.toString()
             }
         })
 
+       // viewHolder.itemView.latest_mes_user_name.text = partUser?.userName
         if (message.text.length> 44){
             val len = message.text.length - 42
             viewHolder.itemView.latest_mes_text.text =  message.text.dropLast(len) +"..."
