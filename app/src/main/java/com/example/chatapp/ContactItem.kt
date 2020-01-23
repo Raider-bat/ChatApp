@@ -22,18 +22,18 @@ class ContactItem(val user: User): Item<GroupieViewHolder>() {
 
                 val userStatus = p0.getValue(UserStatus::class.java)?:return
                 val dateNowMessage ="был(а) в "+ SimpleDateFormat("HH:mm").format(userStatus.time)
-                val timeDiffrence = (SimpleDateFormat("d").format(Date().time).toInt())- (SimpleDateFormat("d").format(userStatus.time).toInt())
+                val timeDifference = (SimpleDateFormat("d").format(Date().time).toInt())- (SimpleDateFormat("d").format(userStatus.time).toInt())
                 val statusNow = when {
                     userStatus.state == "в сети" -> {
                         userStatus.state
                     }
-                    timeDiffrence == 1 -> {
+                    timeDifference == 1 -> {
                         "был(а) вчера в " + SimpleDateFormat("HH:mm").format(userStatus.time)
                     }
-                    timeDiffrence in 2..7 -> {
+                    timeDifference in 2..7 -> {
                         "был(а) на этой неделе"
                     }
-                    timeDiffrence > 7 -> {
+                    timeDifference > 7 -> {
                         "был(а) давно"
                     }
                     else -> {

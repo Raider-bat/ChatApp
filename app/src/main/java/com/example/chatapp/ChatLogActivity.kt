@@ -44,8 +44,9 @@ class ChatLogActivity : AppCompatActivity() {
         recyclerView.layoutManager = layoutManager
 
         val notificationManager = ContextCompat.getSystemService(this, NotificationManager::class.java)
-        notificationManager?.cancel(2)
-
+        if (MyMessageService.notifyUid == user.uid) {
+            notificationManager?.cancel(2)
+        }
         recyclerView.adapter = adapter
 
         emojiSetting()
@@ -62,18 +63,18 @@ class ChatLogActivity : AppCompatActivity() {
 
                 val userStatus = p0.getValue(UserStatus::class.java)?:return
                 val dateNowMessage ="был(а) в "+ SimpleDateFormat("HH:mm").format(userStatus.time)
-                val timeDiffrence = (SimpleDateFormat("d").format(Date().time).toInt())- (SimpleDateFormat("d").format(userStatus.time).toInt())
+                val timeDifference = (SimpleDateFormat("d").format(Date().time).toInt())- (SimpleDateFormat("d").format(userStatus.time).toInt())
                 val statusNow = when {
                     userStatus.state =="в сети" -> {
                         userStatus.state
                     }
-                    timeDiffrence ==1 -> {
+                    timeDifference ==1 -> {
                         "был(а) вчера в "+ SimpleDateFormat("HH:mm").format(userStatus.time)
                     }
-                    timeDiffrence in 2..7 -> {
+                    timeDifference in 2..7 -> {
                         "был(а) на этой неделе"
                     }
-                    timeDiffrence >7 -> {
+                    timeDifference >7 -> {
                         "был(а) давно"
                     }
                     else -> {
@@ -120,18 +121,11 @@ class ChatLogActivity : AppCompatActivity() {
                 }
             }
 
-            override fun onCancelled(p0: DatabaseError) {
-                return
-            }
-            override fun onChildMoved(p0: DataSnapshot, p1: String?) {
-                return
-            }
-            override fun onChildChanged(p0: DataSnapshot, p1: String?) {
-                return
-            }
+            override fun onCancelled(p0: DatabaseError) {}
+            override fun onChildMoved(p0: DataSnapshot, p1: String?) {}
+            override fun onChildChanged(p0: DataSnapshot, p1: String?) {}
             override fun onChildRemoved(p0: DataSnapshot) {
                 adapter.removeGroupAtAdapterPosition(recyclerView.adapter!!.itemCount-1)
-                return
             }
         })
     }
@@ -163,13 +157,19 @@ class ChatLogActivity : AppCompatActivity() {
         }
     }
 
+    companion object {
+        var userUid: String = ""
+    }
+
     override fun onStart() {
         super.onStart()
+        userUid = user.uid!!
         UserStatusController().userStatusWriter("в сети")
     }
 
     override fun onPause() {
         super.onPause()
+        userUid = ""
         UserStatusController().userStatusWriter("offline")
     }
 }

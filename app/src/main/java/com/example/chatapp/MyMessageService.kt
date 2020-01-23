@@ -7,6 +7,9 @@ import com.google.firebase.messaging.RemoteMessage
 
 
 class MyMessageService : FirebaseMessagingService() {
+    companion object{
+       var  notifyUid = ""
+    }
 
     override fun onMessageReceived(p0: RemoteMessage) {
         super.onMessageReceived(p0)
@@ -16,8 +19,8 @@ class MyMessageService : FirebaseMessagingService() {
         val uid = p0.data.getValue("uid")
         val phoneNum = p0.data.getValue("phone")
         val token = p0.data.getValue("us_token")
-
-        if (FirebaseAuth.getInstance().currentUser != null){
+        notifyUid = uid
+        if (FirebaseAuth.getInstance().currentUser != null && ChatLogActivity.userUid != uid){
             NotificationHelper().displayNotify(applicationContext, title, body,uid,token,phoneNum)
         }
     }

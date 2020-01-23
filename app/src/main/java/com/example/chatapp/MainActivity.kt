@@ -29,6 +29,7 @@ class MainActivity : AppCompatActivity() {
         if (item != null) {
             when(item.itemId){
                 R.id.menu_sign_out ->{
+                    UserStatusController().userStatusWriter("offline")
                     AuthUI.getInstance().signOut(this).addOnCompleteListener {
                         val intent = Intent(this, LoginActivity::class.java1)
                         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -45,7 +46,7 @@ class MainActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
     lateinit var recyclerView: RecyclerView
-    val adapter = GroupAdapter<GroupieViewHolder>()
+    private val adapter = GroupAdapter<GroupieViewHolder>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -93,7 +94,7 @@ class MainActivity : AppCompatActivity() {
     fun refreshRecyclerviewMessage(){
         adapter.clear()
 
-        lastMessageMap.toSortedMap().values.forEach{
+        lastMessageMap.values.forEach{
             adapter.add(LatestMessageItem(it))
         }
     }
@@ -104,14 +105,14 @@ class MainActivity : AppCompatActivity() {
             override fun onChildAdded(p0: DataSnapshot, p1: String?) {
                 val lastMes = p0.getValue(Message::class.java1) ?:return
                // adapter.add(LatestMessageItem(lastMes))
-                lastMessageMap.put(p0.key!!,lastMes)
+                lastMessageMap[p0.key!!] = lastMes
                refreshRecyclerviewMessage()
             }
 
             override fun onChildChanged(p0: DataSnapshot, p1: String?) {
                 val lastMes = p0.getValue(Message::class.java1) ?:return
                 //adapter.add(LatestMessageItem(lastMes))
-                     lastMessageMap.put(p0.key!!,lastMes)
+                lastMessageMap[p0.key!!] = lastMes
                 refreshRecyclerviewMessage()
             }
 

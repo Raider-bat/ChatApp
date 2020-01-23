@@ -11,7 +11,7 @@ import com.xwray.groupie.GroupieViewHolder
 
 class ContactsActivity : AppCompatActivity() {
 
-    lateinit var recyclerView: RecyclerView
+    private lateinit var recyclerView: RecyclerView
     val adapter = GroupAdapter<GroupieViewHolder>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,7 +30,7 @@ class ContactsActivity : AppCompatActivity() {
     }
 
     companion object{
-        val USER_KEY = "USER_KEY"
+        const val USER_KEY = "USER_KEY"
     }
    private fun readContactsFromDB() {
 
@@ -51,7 +51,7 @@ class ContactsActivity : AppCompatActivity() {
                adapter.setOnItemClickListener { item, view ->
                    val userItem = item as ContactItem
                    val intent = Intent(view.context, ChatLogActivity::class.java)
-                   intent.putExtra(ContactsActivity.USER_KEY, userItem.user)
+                   intent.putExtra(USER_KEY, userItem.user)
 
                    startActivity(intent)
                    finish()
