@@ -21,7 +21,7 @@ import java.util.*
 
 
 /*
-* This is activity not working in this app
+* This is class don't work, but it can :)
 *
  */
 class MessageListActivity : AppCompatActivity() {

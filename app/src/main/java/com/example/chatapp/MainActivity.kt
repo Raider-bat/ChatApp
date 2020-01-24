@@ -41,6 +41,16 @@ class MainActivity : AppCompatActivity() {
                     val intent = Intent(this, ContactsActivity::class.java1)
                     startActivity(intent)
                 }
+                R.id.menu_change_name ->{
+                    val uid = FirebaseAuth.getInstance().uid
+                    if (uid != null){
+                        val intent = Intent(this, AddNameUserActivity::class.java1)
+                        intent.putExtra(LoginActivity.USER_UID,uid)
+                        startActivity(intent)
+
+                    }
+
+                }
             }
         }
         return super.onOptionsItemSelected(item)
@@ -61,9 +71,9 @@ class MainActivity : AppCompatActivity() {
             override fun onCancelled(p0: DatabaseError) {}
 
             override fun onDataChange(p0: DataSnapshot) {
-               if (p0.value == null || p0.value == ""){
+               if (p0.value == null){
+                   AuthUI.getInstance().signOut(this@MainActivity)
                    val intent = Intent(this@MainActivity, LoginActivity::class.java1)
-
                    startActivity(intent)
                    finish()
                }
@@ -131,10 +141,11 @@ class MainActivity : AppCompatActivity() {
         }
 
         FirebaseDatabase.getInstance().reference.child("Users").child(FirebaseAuth.getInstance().uid!!).child("userName").addListenerForSingleValueEvent(object :ValueEventListener{
-            override fun onCancelled(p0: DatabaseError) {
-            }
+            override fun onCancelled(p0: DatabaseError) {}
             override fun onDataChange(p0: DataSnapshot) {
-                if (p0.value == null || p0.value == ""){
+
+                if (p0.value == null){
+                    AuthUI.getInstance().signOut(this@MainActivity)
                     finish()
                 }
             }

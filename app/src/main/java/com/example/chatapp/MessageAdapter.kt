@@ -8,7 +8,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.chatapp.MessageAdapter.MessageViewHolder
 import com.firebase.ui.database.FirebaseRecyclerAdapter
 import com.firebase.ui.database.FirebaseRecyclerOptions
-
+/*
+* This is class don't work, but it can :)
+*
+ */
 class MessageAdapter(options: FirebaseRecyclerOptions<Message?>) :
     FirebaseRecyclerAdapter<Message, MessageViewHolder>(options) {
     override fun onBindViewHolder(

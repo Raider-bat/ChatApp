@@ -5,7 +5,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 
-androidExtensions{
+androidExtensions {
     experimental = true
 }
 
@@ -15,8 +15,8 @@ android {
         applicationId "com.example.chatapp"
         minSdkVersion 22
         targetSdkVersion 28
-        versionCode 1
-        versionName "1.8"
+        versionCode 10
+        versionName "2.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

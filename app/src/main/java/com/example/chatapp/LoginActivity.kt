@@ -3,6 +3,7 @@ package com.example.chatapp
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Gravity
 import android.widget.Toast
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.*
@@ -55,7 +56,9 @@ class LoginActivity : AppCompatActivity() {
 
                 override fun onVerificationCompleted(credential: PhoneAuthCredential) {
 
-                    Toast.makeText(this@LoginActivity,"Автоматический вход", Toast.LENGTH_SHORT).show()
+                    val toast = Toast.makeText(this@LoginActivity,"Автоматический вход", Toast.LENGTH_SHORT)
+                    toast.setGravity(Gravity.CENTER,0,0)
+                    toast.show()
                     signInWithPhoneAuthCredential(credential)
                 }
 
@@ -63,7 +66,9 @@ class LoginActivity : AppCompatActivity() {
                     // This callback is invoked in an invalid request for verification is made,
                     // for instance if the the phone number format is not valid.
 
-                    Toast.makeText(this@LoginActivity,"Что-то пошло не так..", Toast.LENGTH_SHORT).show()
+                    val toast = Toast.makeText(this@LoginActivity,"Что-то пошло не так..", Toast.LENGTH_SHORT)
+                    toast.setGravity(Gravity.CENTER,0,0)
+                    toast.show()
                 }
 
                 override fun onCodeSent(
@@ -71,7 +76,9 @@ class LoginActivity : AppCompatActivity() {
                     token: PhoneAuthProvider.ForceResendingToken
                 ) {
                     verificationIdCode = verificationId
-                    Toast.makeText(this@LoginActivity,"Сообщение отправлено..", Toast.LENGTH_SHORT).show()
+                    val toast = Toast.makeText(this@LoginActivity,"Сообщение отправлено..", Toast.LENGTH_SHORT)
+                    toast.setGravity(Gravity.CENTER,0,0)
+                    toast.show()
                 }
             })
 
@@ -82,55 +89,56 @@ class LoginActivity : AppCompatActivity() {
         val credential = PhoneAuthProvider.getCredential(verificationIdCode, verify_phone_code.text.toString().trim())
         signInWithPhoneAuthCredential(credential)
     }
-
+companion object{
+    const val USER_UID = "USER_UID"
+}
 
     fun signInWithPhoneAuthCredential(credential: PhoneAuthCredential) {
         auth.signInWithCredential(credential)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
 
-                    val userName: String = user_name.text.toString().trim()
-
-                    FirebaseDatabase.getInstance().reference.child("Users").child(FirebaseAuth.getInstance().currentUser!!.uid).addListenerForSingleValueEvent(object : ValueEventListener{
-                        override fun onCancelled(p0: DatabaseError) {
-                        }
+                    FirebaseDatabase.getInstance().reference.child("Users").child(FirebaseAuth.getInstance().currentUser!!.uid).child("userName").addListenerForSingleValueEvent(object : ValueEventListener{
+                        override fun onCancelled(p0: DatabaseError) {}
 
                         override fun onDataChange(p0: DataSnapshot) {
-                            if (userName.isNotEmpty()){
+                            val userName = if (p0.value != null){
+                                p0.value.toString()
+                            }else{null}
 
-                                val updateName =  UserProfileChangeRequest.Builder().setDisplayName(userName).build()
-                                FirebaseAuth.getInstance().currentUser?.updateProfile(updateName)
                                 FirebaseDatabase.getInstance().getReference("Users").child(FirebaseAuth.getInstance().currentUser!!.uid)
                                     .setValue(User(FirebaseAuth.getInstance().currentUser?.phoneNumber,
                                         userName,
                                         FirebaseAuth.getInstance().currentUser?.uid,
                                         FirebaseInstanceId.getInstance().getToken()))
 
+                            if (userName !=null){
+                                val intent = Intent(this@LoginActivity, MainActivity::class.java)
+                                startActivity(intent)
+                                finish()
                             }else{
-                                FirebaseDatabase.getInstance().getReference("Users").child(FirebaseAuth.getInstance().currentUser!!.uid)
-                                    .setValue(User(FirebaseAuth.getInstance().currentUser?.phoneNumber,
-                                        FirebaseAuth.getInstance().currentUser?.displayName,
-                                        FirebaseAuth.getInstance().currentUser?.uid,
-                                        FirebaseInstanceId.getInstance().getToken()))
+                                val intent = Intent(this@LoginActivity, AddNameUserActivity::class.java)
+                                val uid = FirebaseAuth.getInstance().uid?:return
+                                intent.putExtra(USER_UID,uid)
+                                startActivity(intent)
+                                finish()
                             }
+
                         }
                     })
-                    if (userName.isNotEmpty()){
 
-                        val updateName =  UserProfileChangeRequest.Builder().setDisplayName(userName).build()
-                        FirebaseAuth.getInstance().currentUser?.updateProfile(updateName)
-                    }
                     // Sign in success, update UI with the signed-in user's information
-                    val intent = Intent(this, MainActivity::class.java)
-                    startActivity(intent)
-                    finish()
+
 
                 } else {
                     // Sign in failed, display a message and update the UI
 
                     if (task.exception is FirebaseAuthInvalidCredentialsException) {
                         // The verification code entered was invalid
-                        Toast.makeText(this@LoginActivity,"Неверный код", Toast.LENGTH_SHORT).show()
+                        val toast = Toast.makeText(this@LoginActivity,"Неверный код", Toast.LENGTH_SHORT)
+                            toast.setGravity(Gravity.CENTER,0,0)
+                            toast.show()
+
 
                     }
                 }

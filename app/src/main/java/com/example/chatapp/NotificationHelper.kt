@@ -23,7 +23,7 @@ import androidx.core.content.ContextCompat.getSystemService
        val mesStyle = NotificationCompat.MessagingStyle(title!!)
        mesStyle.addMessage(body, System.currentTimeMillis(), title)
        val user: User = User(phoneNum,title,uid,token)
-
+       val notificationManager = NotificationManagerCompat.from(context)
        val nofitIntent = Intent(context, ChatLogActivity::class.java)
        nofitIntent.putExtra(ContactsActivity.USER_KEY, user)
        val contentIntent = PendingIntent.getActivity(
@@ -44,12 +44,11 @@ import androidx.core.content.ContextCompat.getSystemService
                channel_name, NotificationManager.IMPORTANCE_HIGH
            )
            mChannel.description = Channel_desc
-           val notificationManager = getSystemService(context,NotificationManager::class.java)
            notificationManager?.createNotificationChannel(mChannel)
            notificationManager?.cancel(2)
        }
 
-       val notificationManager = NotificationManagerCompat.from(context)
+
        notificationManager.notify(2, builder.build())
        i++
    }
