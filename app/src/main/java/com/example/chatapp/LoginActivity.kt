@@ -138,8 +138,6 @@ companion object{
                         val toast = Toast.makeText(this@LoginActivity,"Неверный код", Toast.LENGTH_SHORT)
                             toast.setGravity(Gravity.CENTER,0,0)
                             toast.show()
-
-
                     }
                 }
             }

@@ -45,7 +45,7 @@ class ChatLogActivity : AppCompatActivity() {
 
         val notificationManager = ContextCompat.getSystemService(this, NotificationManager::class.java)
         if (MyMessageService.notifyUid == user.uid) {
-            notificationManager?.cancel(2)
+            notificationManager?.cancelAll()
         }
         recyclerView.adapter = adapter
 
@@ -171,5 +171,16 @@ class ChatLogActivity : AppCompatActivity() {
         super.onPause()
         userUid = ""
         UserStatusController().userStatusWriter("offline")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        userUid = ""
+    }
+
+    override fun onResume() {
+        super.onResume()
+        UserStatusController().userStatusWriter("в сети")
+        userUid = user.uid!!
     }
 }

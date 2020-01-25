@@ -47,9 +47,7 @@ class MainActivity : AppCompatActivity() {
                         val intent = Intent(this, AddNameUserActivity::class.java1)
                         intent.putExtra(LoginActivity.USER_UID,uid)
                         startActivity(intent)
-
                     }
-
                 }
             }
         }

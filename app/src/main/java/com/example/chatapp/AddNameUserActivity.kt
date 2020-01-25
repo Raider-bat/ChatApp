@@ -55,7 +55,7 @@ class AddNameUserActivity : AppCompatActivity() {
             })
 
          }else{
-            val toast = Toast.makeText(this, "Неверные никнейм",Toast.LENGTH_SHORT)
+            val toast = Toast.makeText(this, "Неверный никнейм",Toast.LENGTH_SHORT)
             toast.setGravity(Gravity.CENTER,0,0)
             toast.show()
         }
