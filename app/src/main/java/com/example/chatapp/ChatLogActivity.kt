@@ -13,6 +13,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
+import com.xwray.groupie.Item
+import com.xwray.groupie.OnItemClickListener
 import hani.momanii.supernova_emoji_library.Actions.EmojIconActions
 import kotlinx.android.synthetic.main.activity_chat_log.*
 import kotlinx.android.synthetic.main.contact_item.view.*
@@ -71,10 +73,10 @@ class ChatLogActivity : AppCompatActivity() {
                     timeDifference ==1 -> {
                         "был(а) вчера в "+ SimpleDateFormat("HH:mm").format(userStatus.time)
                     }
-                    timeDifference in 2..7 -> {
-                        "был(а) на этой неделе"
+                    timeDifference  in 2..20 ->{
+                        "был(а) " +SimpleDateFormat("d MMM в HH:mm").format(userStatus.time)
                     }
-                    timeDifference >7 -> {
+                    timeDifference > 20 -> {
                         "был(а) давно"
                     }
                     else -> {
@@ -94,13 +96,11 @@ class ChatLogActivity : AppCompatActivity() {
     }
 
     private fun lisMessage(){
-        var dateLatestMessage : Int = 0
-        val myUid = FirebaseAuth.getInstance().uid
-        FirebaseDatabase.getInstance().reference.child("Chats").child(myUid!!).child(user.uid!!).addChildEventListener(object :
+        var dateLatestMessage = 0
+        val myUid = FirebaseAuth.getInstance().uid?:return
+        FirebaseDatabase.getInstance().reference.child("Chats").child(myUid).child(user.uid!!).addChildEventListener(object :
             ChildEventListener {
             override fun onChildAdded(p0: DataSnapshot, p1: String?) {
-
-                recyclerView.smoothScrollToPosition(recyclerView.adapter!!.itemCount)
 
                 val mes = p0.getValue(Message::class.java)
                 if (mes != null){
@@ -112,22 +112,65 @@ class ChatLogActivity : AppCompatActivity() {
                     }
 
                     if (mes.uid == FirebaseAuth.getInstance().uid){
-                        adapter.add(MessageItemFrom(mes.name,mes.text,dateFormatForMessage.format(mes.time),mes.uid))
+                        adapter.add(MessageItemFrom(mes))
 
                     }else {
-                        adapter.add(MessageItem(mes.name, mes.text, dateFormatForMessage.format(mes.time), mes.uid))
+                        adapter.add(MessageItem(mes))
                     }
                      dateLatestMessage = SimpleDateFormat("d").format(mes.time).toInt()
+                    recyclerView.smoothScrollToPosition(recyclerView.adapter!!.itemCount)
                 }
+
             }
 
             override fun onCancelled(p0: DatabaseError) {}
             override fun onChildMoved(p0: DataSnapshot, p1: String?) {}
-            override fun onChildChanged(p0: DataSnapshot, p1: String?) {}
+            override fun onChildChanged(p0: DataSnapshot, p1: String?) {
+            }
             override fun onChildRemoved(p0: DataSnapshot) {
-                adapter.removeGroupAtAdapterPosition(recyclerView.adapter!!.itemCount-1)
+               // adapter.removeGroupAtAdapterPosition(recyclerView.adapter!!.itemCount-1)
+
             }
         })
+
+        adapter.setOnItemClickListener { item, view ->
+
+            val message = item as MessageItemFrom
+            val mes = message.message
+
+            val myUid = FirebaseAuth.getInstance().uid
+            FirebaseDatabase.getInstance().reference.child("Chats").child(myUid!!)
+                .child(mes!!.toUid)
+                .orderByChild("time")
+                .equalTo(mes.time.toDouble())
+                .addListenerForSingleValueEvent(object: ValueEventListener{
+                    override fun onCancelled(p0: DatabaseError) {
+                    }
+
+                    override fun onDataChange(p0: DataSnapshot) {
+                        p0.children.forEach {
+                            it.ref.removeValue()
+                        }
+                    }
+                })
+            if (myUid != mes.toUid) {
+                FirebaseDatabase.getInstance().reference.child("Chats").child(mes!!.toUid)
+                    .child(myUid!!).orderByChild("time")
+                    .equalTo(mes.time.toDouble())
+                    .addListenerForSingleValueEvent(object : ValueEventListener {
+                        override fun onCancelled(p0: DatabaseError) {
+                        }
+
+                        override fun onDataChange(p0: DataSnapshot) {
+                            p0.children.forEach {
+                                it.ref.removeValue()
+                            }
+                        }
+                    })
+            }
+            adapter.removeGroupAtAdapterPosition(adapter.getAdapterPosition(item))
+
+        }
     }
 
     private fun writeMessage(){

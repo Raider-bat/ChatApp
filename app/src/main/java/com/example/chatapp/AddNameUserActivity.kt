@@ -4,7 +4,9 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Gravity
+import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.core.view.isVisible
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.database.DataSnapshot
@@ -22,6 +24,7 @@ class AddNameUserActivity : AppCompatActivity() {
 
 
         set_userName_button.setOnClickListener {
+            add_name_progress_bar.visibility = ProgressBar.VISIBLE
             addUserNameInDataBase()
         }
     }
@@ -31,11 +34,11 @@ class AddNameUserActivity : AppCompatActivity() {
         if (userName.length in 3..23){
             FirebaseDatabase.getInstance().reference.child("Users").orderByChild("userName").equalTo(userName).addListenerForSingleValueEvent(object: ValueEventListener{
                 override fun onCancelled(p0: DatabaseError) {
-
                 }
 
                 override fun onDataChange(p0: DataSnapshot) {
                     if (p0.value != null){
+                        add_name_progress_bar.visibility = ProgressBar.INVISIBLE
                         val toast = Toast.makeText(this@AddNameUserActivity, "Подобный никнейм уже существует",Toast.LENGTH_SHORT)
                         toast.setGravity(Gravity.CENTER,0,0)
                         toast.show()
@@ -47,6 +50,7 @@ class AddNameUserActivity : AppCompatActivity() {
                             }
 
                             val intent = Intent(this@AddNameUserActivity, MainActivity::class.java)
+                            add_name_progress_bar.visibility = ProgressBar.INVISIBLE
                             startActivity(intent)
                             finish()
                         }
@@ -55,6 +59,7 @@ class AddNameUserActivity : AppCompatActivity() {
             })
 
          }else{
+            add_name_progress_bar.visibility = ProgressBar.INVISIBLE
             val toast = Toast.makeText(this, "Неверный никнейм",Toast.LENGTH_SHORT)
             toast.setGravity(Gravity.CENTER,0,0)
             toast.show()

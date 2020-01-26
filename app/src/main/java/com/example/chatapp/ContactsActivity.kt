@@ -35,12 +35,9 @@ class ContactsActivity : AppCompatActivity() {
    private fun readContactsFromDB() {
 
        FirebaseDatabase.getInstance().reference.child("Users").addChildEventListener(object : ChildEventListener{
-           override fun onCancelled(p0: DatabaseError) {
-           }
-           override fun onChildMoved(p0: DataSnapshot, p1: String?) {
-           }
-           override fun onChildChanged(p0: DataSnapshot, p1: String?) {
-           }
+           override fun onCancelled(p0: DatabaseError) {}
+           override fun onChildMoved(p0: DataSnapshot, p1: String?) {}
+           override fun onChildChanged(p0: DataSnapshot, p1: String?) {}
 
            override fun onChildAdded(p0: DataSnapshot, p1: String?) {
                val user = p0.getValue(User::class.java)?:return

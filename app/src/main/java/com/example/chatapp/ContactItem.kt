@@ -30,10 +30,10 @@ class ContactItem(val user: User): Item<GroupieViewHolder>() {
                     timeDifference == 1 -> {
                         "был(а) вчера в " + SimpleDateFormat("HH:mm").format(userStatus.time)
                     }
-                    timeDifference in 2..7 -> {
-                        "был(а) на этой неделе"
+                    timeDifference  in 2..20 ->{
+                        "был(а) " +SimpleDateFormat("d MMM в HH:mm").format(userStatus.time)
                     }
-                    timeDifference > 7 -> {
+                    timeDifference > 20 -> {
                         "был(а) давно"
                     }
                     else -> {

@@ -8,6 +8,7 @@
         <item name="android:windowBackground">@color/cardview_dark_background</item>
     </style>
 
-
-
+<style name="CircularProgress" parent="Theme.Design.Light">
+    <item name="colorAccent">#D3D3D3</item>
+</style>
 </resources>

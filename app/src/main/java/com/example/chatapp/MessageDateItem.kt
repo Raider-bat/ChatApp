@@ -13,4 +13,8 @@ class MessageDateItem(private val time: String) : Item<GroupieViewHolder>() {
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.itemView.date_message.text = time
     }
+
+    override fun isClickable(): Boolean {
+        return false
+    }
 }

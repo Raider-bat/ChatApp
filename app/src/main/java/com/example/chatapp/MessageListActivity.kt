@@ -78,13 +78,13 @@ class MessageListActivity : AppCompatActivity() {
 
                    recyclerView.smoothScrollToPosition(recyclerView.adapter!!.itemCount)
 
-                val mes = p0.getValue(MessageItem::class.java)
+                val mes = p0.getValue(Message::class.java)
                 if (mes != null){
                     if (mes.uid == FirebaseAuth.getInstance().uid){
-                        adapterg.add(MessageItemFrom(mes.name,mes.text,mes.time,mes.uid))
+                        adapterg.add(MessageItemFrom(mes))
 
                     }else {
-                        adapterg.add(MessageItem(mes.name, mes.text, mes.time, mes.uid))
+                        adapterg.add(MessageItem(mes))
                     }
                 }
             }

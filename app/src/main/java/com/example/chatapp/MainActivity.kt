@@ -1,10 +1,13 @@
 package com.example.chatapp
 
 
+import android.content.Context
 import android.content.Intent
+import android.net.ConnectivityManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.*
+import androidx.core.content.getSystemService
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -78,7 +81,7 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-         recyclerView = findViewById(R.id.latest_mes_recyclerview)
+        recyclerView = findViewById(R.id.latest_mes_recyclerview)
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.setHasFixedSize(true)
         val layoutManager  =  LinearLayoutManager(this)
@@ -98,12 +101,10 @@ class MainActivity : AppCompatActivity() {
         listenLastMessage()
     }
 
-    val lastMessageMap = HashMap<String, Message>()
+    val lastMessageMap = HashMap<String, LatestMessageItem>()
     fun refreshRecyclerviewMessage(){
         adapter.clear()
-        lastMessageMap.toSortedMap().values.forEach{
-            adapter.add(LatestMessageItem(it))
-        }
+        adapter.addAll(lastMessageMap.toSortedMap().values)
     }
     private fun listenLastMessage() {
         val myUid = FirebaseAuth.getInstance().uid
@@ -111,15 +112,15 @@ class MainActivity : AppCompatActivity() {
 
             override fun onChildAdded(p0: DataSnapshot, p1: String?) {
                 val lastMes = p0.getValue(Message::class.java1) ?:return
-               // adapter.add(LatestMessageItem(lastMes))
-                lastMessageMap[p0.key!!] = lastMes
+                // adapter.add(LatestMessageItem(lastMes))
+                lastMessageMap[p0.key!!] = LatestMessageItem(lastMes)
                refreshRecyclerviewMessage()
             }
 
             override fun onChildChanged(p0: DataSnapshot, p1: String?) {
                 val lastMes = p0.getValue(Message::class.java1) ?:return
               //  adapter.add(LatestMessageItem(lastMes))
-                lastMessageMap[p0.key!!] = lastMes
+                lastMessageMap[p0.key!!] = LatestMessageItem(lastMes)
                 refreshRecyclerviewMessage()
             }
 

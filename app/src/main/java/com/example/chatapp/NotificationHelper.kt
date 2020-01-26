@@ -1,6 +1,5 @@
 package com.example.chatapp
 
-import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -9,8 +8,6 @@ import android.content.Intent
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import androidx.core.app.Person
-import androidx.core.content.ContextCompat.getSystemService
 import java.util.*
 
 class NotificationHelper {
@@ -20,7 +17,7 @@ class NotificationHelper {
 
 
 
-   public fun displayNotify(context: Context, title: String?, body:String?, uid: String?, token: String?, phoneNum: String?) {
+    fun displayNotify(context: Context, title: String?, body:String?, uid: String?, token: String?, phoneNum: String?) {
        if (title !=null && body !=null ) {
           val messId= (Date().time/1000).toInt()
            val user: User = User(phoneNum, title, uid, token)

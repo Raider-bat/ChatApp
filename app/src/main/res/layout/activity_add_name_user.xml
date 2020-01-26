@@ -56,4 +56,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/user_name" />
+
+    <ProgressBar
+        android:id="@+id/add_name_progress_bar"
+        android:layout_width="57dp"
+        android:layout_height="56dp"
+        android:layout_marginTop="22dp"
+        android:theme="@style/CircularProgress"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/set_userName_button"></ProgressBar>
 </androidx.constraintlayout.widget.ConstraintLayout>

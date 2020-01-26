@@ -4,15 +4,18 @@ import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Item
 
 import kotlinx.android.synthetic.main.list_item_view_from.view.*
+import java.text.SimpleDateFormat
 
-class MessageItemFrom(var name: String?, var text: String, var time:String?, var uid:String): Item<GroupieViewHolder>() {
-    constructor():this("","","","")
+class MessageItemFrom(val message: Message?): Item<GroupieViewHolder>() {
+    constructor():this(null)
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
-        viewHolder.itemView.message_time1.text = time
-        viewHolder.itemView.message_text1.text = text
+        viewHolder.itemView.message_time1.text = SimpleDateFormat("HH:mm").format(message!!.time)
+        viewHolder.itemView.message_text1.text = message.text
     }
 
     override fun getLayout(): Int {
         return R.layout.list_item_view_from
     }
+
+
 }
