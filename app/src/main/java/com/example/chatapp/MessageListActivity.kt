@@ -45,7 +45,6 @@ class MessageListActivity : AppCompatActivity() {
         layoutManager.setStackFromEnd(true)
         layoutManager.isSmoothScrollbarEnabled = true
         recyclerView.setLayoutManager(layoutManager)
-
             // Вытаскиваем сообщения из БД
         val options = FirebaseRecyclerOptions.Builder<Message>()
             .setQuery(

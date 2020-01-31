@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat
 
 class MessageItem(val message: Message?): Item<GroupieViewHolder>() {
     constructor():this(null)
+
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.itemView.message_user.text = message!!.name
         viewHolder.itemView.message_time.text = SimpleDateFormat("HH:mm").format(message.time)
@@ -18,6 +19,9 @@ class MessageItem(val message: Message?): Item<GroupieViewHolder>() {
     }
 
     override fun isClickable(): Boolean {
+        return false
+    }
+    override fun isLongClickable(): Boolean {
         return false
     }
 }

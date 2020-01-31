@@ -18,23 +18,28 @@ class ContactsActivity : AppCompatActivity() {
         setContentView(R.layout.activity_contacts)
         supportActionBar?.title = "Контакты"
 
+        recyclerviewSetting()
+        readContactsFromDB()
+    }
+
+    private fun recyclerviewSetting() {
         recyclerView = findViewById(R.id.recyclerview_contacts)
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.setHasFixedSize(true)
         val layoutManager  =  LinearLayoutManager(this)
         layoutManager.isSmoothScrollbarEnabled = true
         recyclerView.layoutManager = layoutManager
-
-        readContactsFromDB()
         recyclerView.adapter = adapter
+
     }
+
 
     companion object{
         const val USER_KEY = "USER_KEY"
     }
    private fun readContactsFromDB() {
 
-       FirebaseDatabase.getInstance().reference.child("Users").addChildEventListener(object : ChildEventListener{
+       FirebaseDatabase.getInstance().reference.child("Users").orderByChild("userName").addChildEventListener(object : ChildEventListener{
            override fun onCancelled(p0: DatabaseError) {}
            override fun onChildMoved(p0: DataSnapshot, p1: String?) {}
            override fun onChildChanged(p0: DataSnapshot, p1: String?) {}

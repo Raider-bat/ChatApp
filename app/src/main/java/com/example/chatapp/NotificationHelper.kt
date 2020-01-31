@@ -20,7 +20,7 @@ class NotificationHelper {
     fun displayNotify(context: Context, title: String?, body:String?, uid: String?, token: String?, phoneNum: String?) {
        if (title !=null && body !=null ) {
           val messId= (Date().time/1000).toInt()
-           val user: User = User(phoneNum, title, uid, token)
+           val user = User(phoneNum, title, uid, token)
            val notificationManager = NotificationManagerCompat.from(context)
            val nofitIntent = Intent(context, ChatLogActivity::class.java)
            nofitIntent.putExtra(ContactsActivity.USER_KEY, user)
@@ -48,8 +48,6 @@ class NotificationHelper {
                notificationManager?.cancel(messId)
            }
            notificationManager.notify(messId, builder.build())
-
-
        }
    }
 }

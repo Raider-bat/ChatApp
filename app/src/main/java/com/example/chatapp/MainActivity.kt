@@ -6,6 +6,7 @@ import android.content.Intent
 import android.net.ConnectivityManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.core.content.getSystemService
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -18,6 +19,7 @@ import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.Comparator
 import kotlin.collections.HashMap
 import kotlin.jvm.java as java1
 
@@ -56,12 +58,21 @@ class MainActivity : AppCompatActivity() {
         }
         return super.onOptionsItemSelected(item)
     }
-    lateinit var recyclerView: RecyclerView
+
+    private lateinit var recyclerView: RecyclerView
     private val adapter = GroupAdapter<GroupieViewHolder>()
+    private val lastMessageMap = HashMap<String, LatestMessageItem>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        checkUserVerification()
+        recyclerviewSetting()
+        listenLastMessage()
+    }
+
+    private fun checkUserVerification() {
         if(FirebaseAuth.getInstance().currentUser == null ){
             val intent = Intent(this, LoginActivity::class.java1)
             startActivity(intent)
@@ -72,15 +83,18 @@ class MainActivity : AppCompatActivity() {
             override fun onCancelled(p0: DatabaseError) {}
 
             override fun onDataChange(p0: DataSnapshot) {
-               if (p0.value == null){
-                   AuthUI.getInstance().signOut(this@MainActivity)
-                   val intent = Intent(this@MainActivity, LoginActivity::class.java1)
-                   startActivity(intent)
-                   finish()
-               }
+                if (p0.value == null){
+                    AuthUI.getInstance().signOut(this@MainActivity)
+                    val intent = Intent(this@MainActivity, LoginActivity::class.java1)
+                    startActivity(intent)
+                    finish()
+                }
             }
         })
+    }
 
+
+    private fun recyclerviewSetting(){
         recyclerView = findViewById(R.id.latest_mes_recyclerview)
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.setHasFixedSize(true)
@@ -98,30 +112,28 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
         recyclerView.adapter = adapter
-        listenLastMessage()
     }
 
-    val lastMessageMap = HashMap<String, LatestMessageItem>()
-    fun refreshRecyclerviewMessage(){
-        adapter.clear()
-        adapter.addAll(lastMessageMap.toSortedMap().values)
+    fun updateRecyclerviewMessage(){
+        adapter.update(lastMessageMap.values.sortedBy { it.message.time })
     }
+
     private fun listenLastMessage() {
-        val myUid = FirebaseAuth.getInstance().uid
-        FirebaseDatabase.getInstance().reference.child("LatestMessage").child(myUid!!).addChildEventListener(object : ChildEventListener{
+        val myUid = FirebaseAuth.getInstance().uid ?:return
+        FirebaseDatabase.getInstance().reference.child("LatestMessage").child(myUid).orderByChild("time").addChildEventListener(object : ChildEventListener{
 
             override fun onChildAdded(p0: DataSnapshot, p1: String?) {
                 val lastMes = p0.getValue(Message::class.java1) ?:return
-                // adapter.add(LatestMessageItem(lastMes))
                 lastMessageMap[p0.key!!] = LatestMessageItem(lastMes)
-               refreshRecyclerviewMessage()
+                updateRecyclerviewMessage()
+                recyclerView.smoothScrollToPosition(recyclerView.adapter!!.itemCount-1)
             }
 
             override fun onChildChanged(p0: DataSnapshot, p1: String?) {
                 val lastMes = p0.getValue(Message::class.java1) ?:return
-              //  adapter.add(LatestMessageItem(lastMes))
                 lastMessageMap[p0.key!!] = LatestMessageItem(lastMes)
-                refreshRecyclerviewMessage()
+                updateRecyclerviewMessage()
+                recyclerView.smoothScrollToPosition(recyclerView.adapter!!.itemCount-1)
             }
 
             override fun onCancelled(p0: DatabaseError) {}
@@ -132,23 +144,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        if(FirebaseAuth.getInstance().currentUser == null){
-            val intent = Intent(this, LoginActivity::class.java1)
-
-            startActivity(intent)
-            finish()
-        }
-
-        FirebaseDatabase.getInstance().reference.child("Users").child(FirebaseAuth.getInstance().uid!!).child("userName").addListenerForSingleValueEvent(object :ValueEventListener{
-            override fun onCancelled(p0: DatabaseError) {}
-            override fun onDataChange(p0: DataSnapshot) {
-
-                if (p0.value == null){
-                    AuthUI.getInstance().signOut(this@MainActivity)
-                    finish()
-                }
-            }
-        })
+        checkUserVerification()
         UserStatusController().userStatusWriter("в сети")
     }
 

@@ -4,6 +4,7 @@ package com.example.chatapp
 import android.app.NotificationManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.ImageButton
 import androidx.core.content.ContextCompat
@@ -37,6 +38,19 @@ class ChatLogActivity : AppCompatActivity() {
 
         supportActionBar?.title = user.userName
         userStatusAsActionBarSubTitle()
+        recyclerviewSetting()
+
+        val notificationManager = ContextCompat.getSystemService(this, NotificationManager::class.java)
+        if (MyMessageService.notifyUid == user.uid) {
+            notificationManager?.cancelAll()
+        }
+
+        emojiSetting()
+        writeMessage()
+        listMessage()
+    }
+
+    private fun recyclerviewSetting() {
         recyclerView = findViewById(R.id.chat_log_list_message)
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.setHasFixedSize(true)
@@ -44,16 +58,7 @@ class ChatLogActivity : AppCompatActivity() {
         layoutManager.stackFromEnd = true
         layoutManager.isSmoothScrollbarEnabled = true
         recyclerView.layoutManager = layoutManager
-
-        val notificationManager = ContextCompat.getSystemService(this, NotificationManager::class.java)
-        if (MyMessageService.notifyUid == user.uid) {
-            notificationManager?.cancelAll()
-        }
         recyclerView.adapter = adapter
-
-        emojiSetting()
-        writeMessage()
-        lisMessage()
     }
 
     private fun userStatusAsActionBarSubTitle() {
@@ -95,48 +100,52 @@ class ChatLogActivity : AppCompatActivity() {
         emojiIcomAction.ShowEmojIcon()
     }
 
-    private fun lisMessage(){
+    private fun listMessage(){
         var dateLatestMessage = 0
         val myUid = FirebaseAuth.getInstance().uid?:return
         FirebaseDatabase.getInstance().reference.child("Chats").child(myUid).child(user.uid!!).addChildEventListener(object :
             ChildEventListener {
             override fun onChildAdded(p0: DataSnapshot, p1: String?) {
 
-                val mes = p0.getValue(Message::class.java)
-                if (mes != null){
-                    val dateFormatForMessage = SimpleDateFormat("HH:mm")
-                    val dateForDialog = SimpleDateFormat("d MMMM")
-                    val dateNowMessage = SimpleDateFormat("d").format(mes.time).toInt()
-                    if (dateNowMessage - dateLatestMessage !=0){
-                        adapter.add(MessageDateItem(dateForDialog.format(mes.time)))
-                    }
+                val mes = p0.getValue(Message::class.java) ?:return
 
-                    if (mes.uid == FirebaseAuth.getInstance().uid){
-                        adapter.add(MessageItemFrom(mes))
-
-                    }else {
-                        adapter.add(MessageItem(mes))
-                    }
-                     dateLatestMessage = SimpleDateFormat("d").format(mes.time).toInt()
-                    recyclerView.smoothScrollToPosition(recyclerView.adapter!!.itemCount)
+                val dateForDialog = SimpleDateFormat("d MMMM")
+                val dateNowMessage = SimpleDateFormat("d").format(mes.time).toInt()
+                if (dateNowMessage - dateLatestMessage !=0){
+                    adapter.add(MessageDateItem(dateForDialog.format(mes.time)))
                 }
+                if (mes.uid == FirebaseAuth.getInstance().uid){
+                    adapter.add(MessageItemFrom(mes))
+
+                }else {
+                    adapter.add(MessageItem(mes))
+                }
+                dateLatestMessage = SimpleDateFormat("d").format(mes.time).toInt()
+                recyclerView.smoothScrollToPosition(recyclerView.adapter!!.itemCount)
 
             }
 
             override fun onCancelled(p0: DatabaseError) {}
             override fun onChildMoved(p0: DataSnapshot, p1: String?) {}
-            override fun onChildChanged(p0: DataSnapshot, p1: String?) {
-            }
+            override fun onChildChanged(p0: DataSnapshot, p1: String?) {}
+
             override fun onChildRemoved(p0: DataSnapshot) {
                // adapter.removeGroupAtAdapterPosition(recyclerView.adapter!!.itemCount-1)
-
+               // val mes = p0.getValue(Message::class.java)?:return
+                // adapter.remove(MessageItem(mes))
+               // if(mes.toUid != mes.uid){
+                 //   if(mes.uid == user.uid!!){
+                  //      MessageItem(mes).unbind(GroupieViewHolder(View(this@ChatLogActivity)))
+                       // adapter.removeGroupAtAdapterPosition(MessageItem(mes).getPosition())
+             //      }
+             //    }
             }
         })
 
-        adapter.setOnItemClickListener { item, view ->
+        adapter.setOnItemLongClickListener  { item, view ->
 
-            val message = item as MessageItemFrom
-            val mes = message.message
+            val messageItem = item as MessageItemFrom
+            val mes = messageItem.message
 
             val myUid = FirebaseAuth.getInstance().uid
             FirebaseDatabase.getInstance().reference.child("Chats").child(myUid!!)
@@ -169,8 +178,11 @@ class ChatLogActivity : AppCompatActivity() {
                     })
             }
             adapter.removeGroupAtAdapterPosition(adapter.getAdapterPosition(item))
-
+            val pos = adapter.getAdapterPosition(item).toString()
+            Log.d("WORKK", pos)
+            true
         }
+
     }
 
     private fun writeMessage(){

@@ -8,6 +8,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.chatapp.MessageAdapter.MessageViewHolder
 import com.firebase.ui.database.FirebaseRecyclerAdapter
 import com.firebase.ui.database.FirebaseRecyclerOptions
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
+import java.text.SimpleDateFormat
+
 /*
 * This is class don't work, but it can :)
 *
@@ -24,7 +28,8 @@ class MessageAdapter(options: FirebaseRecyclerOptions<Message?>) :
         holder.mes_time.text = model.time.toString()
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MessageViewHolder {
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MessageViewHolder{
         val view =
             LayoutInflater.from(parent.context).inflate(R.layout.list_item_view, parent, false)
         return MessageViewHolder(view)
@@ -32,14 +37,9 @@ class MessageAdapter(options: FirebaseRecyclerOptions<Message?>) :
 
     inner class MessageViewHolder(itemView: View) :
         RecyclerView.ViewHolder(itemView) {
-        var mes_user: TextView
-        var mes_time: TextView
-        var mes_text: TextView
+        var mes_user: TextView = itemView.findViewById(R.id.message_user)
+        var mes_time: TextView = itemView.findViewById(R.id.message_time)
+        var mes_text: TextView = itemView.findViewById(R.id.message_text)
 
-        init {
-            mes_user = itemView.findViewById(R.id.message_user)
-            mes_time = itemView.findViewById(R.id.message_time)
-            mes_text = itemView.findViewById(R.id.message_text)
-        }
     }
 }

@@ -17,4 +17,8 @@ class MessageDateItem(private val time: String) : Item<GroupieViewHolder>() {
     override fun isClickable(): Boolean {
         return false
     }
+
+    override fun isLongClickable(): Boolean {
+        return false
+    }
 }

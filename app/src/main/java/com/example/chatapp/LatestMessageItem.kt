@@ -9,8 +9,9 @@ import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Item
 import kotlinx.android.synthetic.main.latest_mes_item.view.*
 import java.text.SimpleDateFormat
+import java.util.*
 
-class LatestMessageItem(private val message: Message) : Item<GroupieViewHolder>(){
+class LatestMessageItem( val message: Message) : Item<GroupieViewHolder>(){
 
     var partUser : User? = null
     override fun getLayout(): Int {
@@ -50,7 +51,15 @@ class LatestMessageItem(private val message: Message) : Item<GroupieViewHolder>(
         }else{
             viewHolder.itemView.latest_mes_text.text =  message.text
         }
-        val dateFormat = SimpleDateFormat("HH:mm")
-        viewHolder.itemView.latest_mes_time.text = dateFormat.format(message.time)
+        val dateFormatHM = SimpleDateFormat("HH:mm")
+        val dateFormatDay = SimpleDateFormat("E")
+        val dateFormatDM = SimpleDateFormat("d MMM")
+        when(SimpleDateFormat("d").format(Date().time).toInt() -  SimpleDateFormat("d").format(message.time).toInt()){
+            0 -> viewHolder.itemView.latest_mes_time.text = dateFormatHM.format(message.time)
+
+            in 1..7 -> viewHolder.itemView.latest_mes_time.text = dateFormatDay.format(message.time)
+
+            else ->viewHolder.itemView.latest_mes_time.text = dateFormatDM.format(message.time)
+        }
     }
 }
