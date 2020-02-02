@@ -27,17 +27,13 @@ class ContactItem(val user: User): Item<GroupieViewHolder>() {
                     userStatus.state == "в сети" -> {
                         userStatus.state
                     }
-                    timeDifference == 1 -> {
-                        "был(а) вчера в " + SimpleDateFormat("HH:mm").format(userStatus.time)
+                    timeDifference ==1 -> {
+                        "был(а) вчера в "+ SimpleDateFormat("HH:mm").format(userStatus.time)
                     }
-                    timeDifference  in 2..20 ->{
-                        "был(а) " +SimpleDateFormat("d MMM в HH:mm").format(userStatus.time)
-                    }
-                    timeDifference > 20 -> {
-                        "был(а) давно"
-                    }
-                    else -> {
+                    timeDifference == 0 -> {
                         dateNowMessage
+                    }else ->{
+                        "был(а) " +SimpleDateFormat("d MMM в HH:mm").format(userStatus.time)
                     }
                 }
                 viewHolder.itemView.contact_state.text = statusNow

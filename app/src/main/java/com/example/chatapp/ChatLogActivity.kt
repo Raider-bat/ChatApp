@@ -5,8 +5,12 @@ import android.app.NotificationManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.View
+import android.view.ActionMode
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.ImageButton
+import android.widget.ProgressBar
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -15,10 +19,8 @@ import com.google.firebase.database.*
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Item
-import com.xwray.groupie.OnItemClickListener
 import hani.momanii.supernova_emoji_library.Actions.EmojIconActions
 import kotlinx.android.synthetic.main.activity_chat_log.*
-import kotlinx.android.synthetic.main.contact_item.view.*
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -27,9 +29,8 @@ class ChatLogActivity : AppCompatActivity() {
     lateinit var recyclerView: RecyclerView
     var adapter = GroupAdapter<GroupieViewHolder>()
     lateinit var user : User
-    val channel_id ="mes_id"
-    val channel_name = "mes_name"
-    val Channel_desc = "mes_notif"
+    var itemm: Item<GroupieViewHolder>? = null
+    var mActionMode: ActionMode? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,14 +79,10 @@ class ChatLogActivity : AppCompatActivity() {
                     timeDifference ==1 -> {
                         "был(а) вчера в "+ SimpleDateFormat("HH:mm").format(userStatus.time)
                     }
-                    timeDifference  in 2..20 ->{
-                        "был(а) " +SimpleDateFormat("d MMM в HH:mm").format(userStatus.time)
-                    }
-                    timeDifference > 20 -> {
-                        "был(а) давно"
-                    }
-                    else -> {
+                    timeDifference == 0 -> {
                         dateNowMessage
+                    }else ->{
+                        "был(а) " +SimpleDateFormat("d MMM в HH:mm").format(userStatus.time)
                     }
                 }
                 supportActionBar?.subtitle = statusNow
@@ -102,11 +99,24 @@ class ChatLogActivity : AppCompatActivity() {
 
     private fun listMessage(){
         var dateLatestMessage = 0
+        chat_activity_progress_bar.visibility = ProgressBar.VISIBLE
         val myUid = FirebaseAuth.getInstance().uid?:return
+        FirebaseDatabase.getInstance().reference.child("Chats").child(myUid).child(user.uid!!).addListenerForSingleValueEvent(object :ValueEventListener{
+            override fun onCancelled(p0: DatabaseError) {
+
+            }
+
+            override fun onDataChange(p0: DataSnapshot) {
+                if (p0.childrenCount == 0L) {
+                    chat_activity_progress_bar.visibility = ProgressBar.INVISIBLE
+                    text_view_no_messages.visibility = TextView.VISIBLE
+                }
+            }
+        })
         FirebaseDatabase.getInstance().reference.child("Chats").child(myUid).child(user.uid!!).addChildEventListener(object :
             ChildEventListener {
             override fun onChildAdded(p0: DataSnapshot, p1: String?) {
-
+                text_view_no_messages.visibility = TextView.INVISIBLE
                 val mes = p0.getValue(Message::class.java) ?:return
 
                 val dateForDialog = SimpleDateFormat("d MMMM")
@@ -122,6 +132,7 @@ class ChatLogActivity : AppCompatActivity() {
                 }
                 dateLatestMessage = SimpleDateFormat("d").format(mes.time).toInt()
                 recyclerView.smoothScrollToPosition(recyclerView.adapter!!.itemCount)
+                chat_activity_progress_bar.visibility = ProgressBar.INVISIBLE
 
             }
 
@@ -130,59 +141,92 @@ class ChatLogActivity : AppCompatActivity() {
             override fun onChildChanged(p0: DataSnapshot, p1: String?) {}
 
             override fun onChildRemoved(p0: DataSnapshot) {
-               // adapter.removeGroupAtAdapterPosition(recyclerView.adapter!!.itemCount-1)
                // val mes = p0.getValue(Message::class.java)?:return
                 // adapter.remove(MessageItem(mes))
                // if(mes.toUid != mes.uid){
                  //   if(mes.uid == user.uid!!){
-                  //      MessageItem(mes).unbind(GroupieViewHolder(View(this@ChatLogActivity)))
-                       // adapter.removeGroupAtAdapterPosition(MessageItem(mes).getPosition())
              //      }
              //    }
             }
         })
 
-        adapter.setOnItemLongClickListener  { item, view ->
+        adapter.setOnItemLongClickListener { item, view ->
 
-            val messageItem = item as MessageItemFrom
-            val mes = messageItem.message
+            if (mActionMode!= null){
 
-            val myUid = FirebaseAuth.getInstance().uid
-            FirebaseDatabase.getInstance().reference.child("Chats").child(myUid!!)
-                .child(mes!!.toUid)
-                .orderByChild("time")
-                .equalTo(mes.time.toDouble())
-                .addListenerForSingleValueEvent(object: ValueEventListener{
-                    override fun onCancelled(p0: DatabaseError) {
-                    }
-
-                    override fun onDataChange(p0: DataSnapshot) {
-                        p0.children.forEach {
-                            it.ref.removeValue()
-                        }
-                    }
-                })
-            if (myUid != mes.toUid) {
-                FirebaseDatabase.getInstance().reference.child("Chats").child(mes!!.toUid)
-                    .child(myUid!!).orderByChild("time")
-                    .equalTo(mes.time.toDouble())
-                    .addListenerForSingleValueEvent(object : ValueEventListener {
-                        override fun onCancelled(p0: DatabaseError) {
-                        }
-
-                        override fun onDataChange(p0: DataSnapshot) {
-                            p0.children.forEach {
-                                it.ref.removeValue()
-                            }
-                        }
-                    })
+                return@setOnItemLongClickListener false
+            }else {
+                itemm = item
+                mActionMode = startActionMode(mActionModeCallBack)
+                return@setOnItemLongClickListener true
             }
-            adapter.removeGroupAtAdapterPosition(adapter.getAdapterPosition(item))
-            val pos = adapter.getAdapterPosition(item).toString()
-            Log.d("WORKK", pos)
-            true
+
         }
 
+    }
+
+    private val mActionModeCallBack = object : ActionMode.Callback {
+
+        override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
+            when(item!!.itemId){
+                R.id.delete_message ->{
+
+                    val messageItem = itemm as MessageItemFrom
+                    val mes = messageItem.message
+
+                    val myUid = FirebaseAuth.getInstance().uid
+                    FirebaseDatabase.getInstance().reference.child("Chats").child(myUid!!)
+                        .child(mes!!.toUid)
+                        .orderByChild("time")
+                        .equalTo(mes.time.toDouble())
+                        .addListenerForSingleValueEvent(object: ValueEventListener{
+                            override fun onCancelled(p0: DatabaseError) {
+                            }
+
+                            override fun onDataChange(p0: DataSnapshot) {
+                                p0.children.forEach {
+                                    it.ref.removeValue()
+                                }
+                            }
+                        })
+                    if (myUid != mes.toUid) {
+                        FirebaseDatabase.getInstance().reference.child("Chats").child(mes!!.toUid)
+                            .child(myUid!!).orderByChild("time")
+                            .equalTo(mes.time.toDouble())
+                            .addListenerForSingleValueEvent(object : ValueEventListener {
+                                override fun onCancelled(p0: DatabaseError) {
+                                }
+
+                                override fun onDataChange(p0: DataSnapshot) {
+                                    p0.children.forEach {
+                                        it.ref.removeValue()
+                                    }
+                                }
+                            })
+                    }
+                    adapter.removeGroupAtAdapterPosition(adapter.getAdapterPosition(itemm as MessageItemFrom))
+                    val pos = adapter.getAdapterPosition(itemm as MessageItemFrom).toString()
+                    Log.d("WORKK", pos)
+                    mode!!.finish()
+                    return true
+                }
+                else -> return false
+            }
+
+        }
+
+        override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
+            mode!!.menuInflater.inflate(R.menu.context_menu,menu)
+            return true
+        }
+
+        override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?): Boolean {
+        return false
+        }
+
+        override fun onDestroyActionMode(mode: ActionMode?) {
+            mActionMode = null
+        }
     }
 
     private fun writeMessage(){

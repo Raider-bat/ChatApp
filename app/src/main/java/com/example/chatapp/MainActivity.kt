@@ -8,6 +8,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import android.widget.ProgressBar
+import android.widget.TextView
 import androidx.core.content.getSystemService
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,6 +19,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
+import kotlinx.android.synthetic.main.activity_main.*
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.Comparator
@@ -118,11 +121,28 @@ class MainActivity : AppCompatActivity() {
         adapter.update(lastMessageMap.values.sortedBy { it.message.time })
     }
 
+
     private fun listenLastMessage() {
+
         val myUid = FirebaseAuth.getInstance().uid ?:return
+        FirebaseDatabase.getInstance().reference.child("LatestMessage").child(myUid).addListenerForSingleValueEvent(object :ValueEventListener{
+            override fun onCancelled(p0: DatabaseError) {
+
+            }
+
+            override fun onDataChange(p0: DataSnapshot) {
+                if (p0.childrenCount == 0L) {
+                    main_activity_progress_bar.visibility = ProgressBar.INVISIBLE
+                    text_view_if_no_chats.visibility = TextView.VISIBLE
+                }
+            }
+        })
+
         FirebaseDatabase.getInstance().reference.child("LatestMessage").child(myUid).orderByChild("time").addChildEventListener(object : ChildEventListener{
 
             override fun onChildAdded(p0: DataSnapshot, p1: String?) {
+                text_view_if_no_chats.visibility = TextView.INVISIBLE
+                main_activity_progress_bar.visibility = ProgressBar.INVISIBLE
                 val lastMes = p0.getValue(Message::class.java1) ?:return
                 lastMessageMap[p0.key!!] = LatestMessageItem(lastMes)
                 updateRecyclerviewMessage()
@@ -130,16 +150,20 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onChildChanged(p0: DataSnapshot, p1: String?) {
+
                 val lastMes = p0.getValue(Message::class.java1) ?:return
                 lastMessageMap[p0.key!!] = LatestMessageItem(lastMes)
                 updateRecyclerviewMessage()
                 recyclerView.smoothScrollToPosition(recyclerView.adapter!!.itemCount-1)
             }
 
-            override fun onCancelled(p0: DatabaseError) {}
+            override fun onCancelled(p0: DatabaseError) {
+                main_activity_progress_bar.visibility = ProgressBar.INVISIBLE
+            }
             override fun onChildMoved(p0: DataSnapshot, p1: String?) {}
             override fun onChildRemoved(p0: DataSnapshot) {}
         })
+        main_activity_progress_bar.visibility = ProgressBar.VISIBLE
     }
 
     override fun onStart() {

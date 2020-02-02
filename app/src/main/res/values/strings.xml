@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">RaiderChat</string>
+    <string name="main_activity_first_view">У вас нет начатых диалогов, напишите кому нибудь сообщение</string>
+    <string name="chat_activity_first_view">Здесь пока ничего нет..</string>
 </resources>
