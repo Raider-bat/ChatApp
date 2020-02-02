@@ -7,7 +7,6 @@ import kotlinx.android.synthetic.main.list_item_view_from.view.*
 import java.text.SimpleDateFormat
 
 class MessageItemFrom(val message: Message?): Item<GroupieViewHolder>() {
-    constructor():this(null)
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.itemView.message_time1.text = SimpleDateFormat("HH:mm").format(message!!.time)
         viewHolder.itemView.message_text1.text = message.text
@@ -16,6 +15,4 @@ class MessageItemFrom(val message: Message?): Item<GroupieViewHolder>() {
     override fun getLayout(): Int {
         return R.layout.list_item_view_from
     }
-
-
 }

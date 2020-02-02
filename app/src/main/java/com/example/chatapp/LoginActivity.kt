@@ -25,6 +25,7 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
         auth = FirebaseAuth.getInstance()
+
         login_button.setOnClickListener{
 
             var numberPhone = number_phone.text.toString().trim()
@@ -41,7 +42,6 @@ class LoginActivity : AppCompatActivity() {
 
             }else{
                 val toast = Toast.makeText(this@LoginActivity,"Неверный номер", Toast.LENGTH_SHORT)
-                toast.setGravity(Gravity.CENTER,0,0)
                 toast.show()
             }
         }
@@ -55,7 +55,6 @@ class LoginActivity : AppCompatActivity() {
 
     private fun sendVerificationCode(numberPhone: String){
 
-
         PhoneAuthProvider.getInstance().verifyPhoneNumber(numberPhone,
             60,
             TimeUnit.SECONDS,
@@ -64,7 +63,6 @@ class LoginActivity : AppCompatActivity() {
 
                 override fun onVerificationCompleted(credential: PhoneAuthCredential) {
                     val toast = Toast.makeText(this@LoginActivity,"Автоматический вход", Toast.LENGTH_SHORT)
-                    toast.setGravity(Gravity.CENTER,0,0)
                     toast.show()
                     signInWithPhoneAuthCredential(credential)
                 }
@@ -74,7 +72,6 @@ class LoginActivity : AppCompatActivity() {
                     // for instance if the the phone number format is not valid.
                     login_progress_bar.visibility = ProgressBar.INVISIBLE
                     val toast = Toast.makeText(this@LoginActivity,"Что-то пошло не так..", Toast.LENGTH_SHORT)
-                    toast.setGravity(Gravity.CENTER,0,0)
                     toast.show()
                     login_button.isEnabled = true
                 }
@@ -86,7 +83,6 @@ class LoginActivity : AppCompatActivity() {
                     login_progress_bar.visibility = ProgressBar.INVISIBLE
                     verificationIdCode = verificationId
                     val toast = Toast.makeText(this@LoginActivity,"Сообщение отправлено..", Toast.LENGTH_SHORT)
-                    toast.setGravity(Gravity.CENTER,0,0)
                     toast.show()
                     login_button.isEnabled= true
                 }
@@ -99,9 +95,12 @@ class LoginActivity : AppCompatActivity() {
         val credential = PhoneAuthProvider.getCredential(verificationIdCode, verify_phone_code.text.toString().trim())
         signInWithPhoneAuthCredential(credential)
     }
-companion object{
+
+    companion object{
+
     const val USER_UID = "USER_UID"
-}
+
+    }
 
     fun signInWithPhoneAuthCredential(credential: PhoneAuthCredential) {
         auth.signInWithCredential(credential)
@@ -135,13 +134,9 @@ companion object{
                                 startActivity(intent)
                                 finish()
                             }
-
                         }
                     })
-
                     // Sign in success, update UI with the signed-in user's information
-
-
                 } else {
                     // Sign in failed, display a message and update the UI
 
@@ -149,7 +144,6 @@ companion object{
                         // The verification code entered was invalid
                         login_progress_bar.visibility = ProgressBar.INVISIBLE
                         val toast = Toast.makeText(this@LoginActivity,"Неверный код", Toast.LENGTH_SHORT)
-                            toast.setGravity(Gravity.CENTER,0,0)
                             toast.show()
                     }
                 }

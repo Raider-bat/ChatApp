@@ -45,7 +45,7 @@ class ContactsActivity : AppCompatActivity() {
            override fun onChildChanged(p0: DataSnapshot, p1: String?) {}
 
            override fun onChildAdded(p0: DataSnapshot, p1: String?) {
-               val user = p0.getValue(User::class.java)?:return
+               val user = p0.getValue(User::class.java) ?:return
                if (user.userName != ""){
                    adapter.add(ContactItem(user))
                }

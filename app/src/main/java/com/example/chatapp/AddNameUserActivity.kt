@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Gravity
 import android.widget.ProgressBar
+import android.widget.TextView
 import android.widget.Toast
 import androidx.core.view.isVisible
 import com.google.firebase.auth.FirebaseAuth
@@ -21,10 +22,13 @@ class AddNameUserActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_name_user)
         userUid = intent.getStringExtra(LoginActivity.USER_UID)
-
-
+        val userName = FirebaseAuth.getInstance().currentUser?.displayName
+        if (userName != null){
+            user_name.setText(userName,TextView.BufferType.EDITABLE)
+        }
         set_userName_button.setOnClickListener {
             add_name_progress_bar.visibility = ProgressBar.VISIBLE
+
             addUserNameInDataBase()
         }
     }
@@ -40,7 +44,6 @@ class AddNameUserActivity : AppCompatActivity() {
                     if (p0.value != null){
                         add_name_progress_bar.visibility = ProgressBar.INVISIBLE
                         val toast = Toast.makeText(this@AddNameUserActivity, "Подобный никнейм уже существует",Toast.LENGTH_SHORT)
-                        toast.setGravity(Gravity.CENTER,0,0)
                         toast.show()
                     }else{
                         FirebaseDatabase.getInstance().reference.child("Users").child(userUid).child("userName").setValue(userName).addOnCompleteListener {
@@ -61,7 +64,6 @@ class AddNameUserActivity : AppCompatActivity() {
          }else{
             add_name_progress_bar.visibility = ProgressBar.INVISIBLE
             val toast = Toast.makeText(this, "Неверный никнейм",Toast.LENGTH_SHORT)
-            toast.setGravity(Gravity.CENTER,0,0)
             toast.show()
         }
     }

@@ -140,17 +140,10 @@ class ChatLogActivity : AppCompatActivity() {
             override fun onChildMoved(p0: DataSnapshot, p1: String?) {}
             override fun onChildChanged(p0: DataSnapshot, p1: String?) {}
 
-            override fun onChildRemoved(p0: DataSnapshot) {
-               // val mes = p0.getValue(Message::class.java)?:return
-                // adapter.remove(MessageItem(mes))
-               // if(mes.toUid != mes.uid){
-                 //   if(mes.uid == user.uid!!){
-             //      }
-             //    }
-            }
+            override fun onChildRemoved(p0: DataSnapshot) {}
         })
 
-        adapter.setOnItemLongClickListener { item, view ->
+        adapter.setOnItemLongClickListener { item, _ ->
 
             if (mActionMode!= null){
 
@@ -173,7 +166,6 @@ class ChatLogActivity : AppCompatActivity() {
 
                     val messageItem = itemm as MessageItemFrom
                     val mes = messageItem.message
-
                     val myUid = FirebaseAuth.getInstance().uid
                     FirebaseDatabase.getInstance().reference.child("Chats").child(myUid!!)
                         .child(mes!!.toUid)
@@ -205,14 +197,11 @@ class ChatLogActivity : AppCompatActivity() {
                             })
                     }
                     adapter.removeGroupAtAdapterPosition(adapter.getAdapterPosition(itemm as MessageItemFrom))
-                    val pos = adapter.getAdapterPosition(itemm as MessageItemFrom).toString()
-                    Log.d("WORKK", pos)
                     mode!!.finish()
                     return true
                 }
                 else -> return false
             }
-
         }
 
         override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {

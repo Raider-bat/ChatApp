@@ -15,8 +15,6 @@ class NotificationHelper {
     val channel_name = "mes_name"
     val Channel_desc = "mes_notif"
 
-
-
     fun displayNotify(context: Context, title: String?, body:String?, uid: String?, token: String?, phoneNum: String?) {
        if (title !=null && body !=null ) {
           val messId= (Date().time/1000).toInt()

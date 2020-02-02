@@ -28,6 +28,11 @@ import kotlin.jvm.java as java1
 
 class MainActivity : AppCompatActivity() {
 
+    lateinit var myLifecycleObserver: MainLifecycleObserver
+    private lateinit var recyclerView: RecyclerView
+    private val adapter = GroupAdapter<GroupieViewHolder>()
+    private val lastMessageMap = HashMap<String, LatestMessageItem>()
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.main_menu, menu)
         return true
@@ -62,13 +67,11 @@ class MainActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    private lateinit var recyclerView: RecyclerView
-    private val adapter = GroupAdapter<GroupieViewHolder>()
-    private val lastMessageMap = HashMap<String, LatestMessageItem>()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        myLifecycleObserver = MainLifecycleObserver()
+        lifecycle.addObserver(myLifecycleObserver)
 
         checkUserVerification()
         recyclerviewSetting()
@@ -82,7 +85,8 @@ class MainActivity : AppCompatActivity() {
             finish()
         }
 
-        FirebaseDatabase.getInstance().reference.child("Users").child(FirebaseAuth.getInstance().uid!!).child("userName").addListenerForSingleValueEvent(object :ValueEventListener{
+        FirebaseDatabase.getInstance().reference.child("Users").child(FirebaseAuth.getInstance().uid!!).child("userName").addListenerForSingleValueEvent(object :
+            ValueEventListener {
             override fun onCancelled(p0: DatabaseError) {}
 
             override fun onDataChange(p0: DataSnapshot) {
@@ -107,7 +111,6 @@ class MainActivity : AppCompatActivity() {
         recyclerView.layoutManager = layoutManager
         layoutManager.stackFromEnd = true
         recyclerView.addItemDecoration(DividerItemDecoration(this,DividerItemDecoration.VERTICAL))
-
         adapter.setOnItemClickListener { item, view ->
             val userData =  item as LatestMessageItem
             val intent = Intent(this, ChatLogActivity::class.java1)
@@ -169,16 +172,5 @@ class MainActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         checkUserVerification()
-        UserStatusController().userStatusWriter("в сети")
-    }
-
-    override fun onPause() {
-        super.onPause()
-        UserStatusController().userStatusWriter("offline")
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        UserStatusController().userStatusWriter("offline")
     }
 }

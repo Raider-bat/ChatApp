@@ -66,8 +66,6 @@ class MessageListActivity : AppCompatActivity() {
         writeMessage()
         //Слушатель изменения в базе данных
         lisMessage()
-       // FirebaseDatabase.getInstance().setPersistenceCacheSizeBytes(50000000)
-        //FirebaseDatabase.getInstance().setPersistenceEnabled(true)
     }
 
 

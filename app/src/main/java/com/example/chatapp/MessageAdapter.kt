@@ -35,7 +35,7 @@ class MessageAdapter(options: FirebaseRecyclerOptions<Message?>) :
         return MessageViewHolder(view)
     }
 
-    inner class MessageViewHolder(itemView: View) :
+     class MessageViewHolder(itemView: View) :
         RecyclerView.ViewHolder(itemView) {
         var mes_user: TextView = itemView.findViewById(R.id.message_user)
         var mes_time: TextView = itemView.findViewById(R.id.message_time)

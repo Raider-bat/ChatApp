@@ -20,7 +20,7 @@ class ContactItem(val user: User): Item<GroupieViewHolder>() {
 
             override fun onDataChange(p0: DataSnapshot) {
 
-                val userStatus = p0.getValue(UserStatus::class.java)?:return
+                val userStatus = p0.getValue(UserStatus::class.java) ?:return
                 val dateNowMessage ="был(а) в "+ SimpleDateFormat("HH:mm").format(userStatus.time)
                 val timeDifference = (SimpleDateFormat("d").format(Date().time).toInt())- (SimpleDateFormat("d").format(userStatus.time).toInt())
                 val statusNow = when {

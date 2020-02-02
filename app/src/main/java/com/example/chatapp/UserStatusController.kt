@@ -10,7 +10,7 @@ import java.util.*
 
 class UserStatusController {
 
-    public fun userStatusWriter(state:String){
+     fun userStatusWriter(state:String){
         val myUid = FirebaseAuth.getInstance().uid?:return
         val time = Date().time
         FirebaseDatabase.getInstance().reference.child("Users").child(FirebaseAuth.getInstance().uid!!).child("userName").addListenerForSingleValueEvent(object :ValueEventListener{
