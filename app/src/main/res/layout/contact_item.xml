@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="65dp"
     android:id="@+id/item_contact"
-    android:background="#363636"
+    android:background="#282828"
     android:layout_marginBottom="0.5dp"
     android:layout_marginTop="0.5dp">
 
@@ -17,7 +17,7 @@
         android:layout_marginTop="6dp"
         android:layout_marginBottom="3dp"
         android:fontFamily="sans-serif"
-        android:text="Raider"
+        android:text="Неизвестно"
         android:textAllCaps="false"
         android:textColor="#FFFFFF"
         android:textSize="19sp"

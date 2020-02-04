@@ -1,4 +1,4 @@
-package com.example.chatapp
+package com.example.chatapp.view
 
 
 import android.content.Intent
@@ -7,6 +7,11 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.chatapp.Items.MessageItem
+import com.example.chatapp.Items.MessageItemFrom
+import com.example.chatapp.data.Message
+import com.example.chatapp.adapters.MessageAdapter
+import com.example.chatapp.R
 import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.ChildEventListener
@@ -70,7 +75,9 @@ class MessageListActivity : AppCompatActivity() {
 
 
    private fun lisMessage(){
-        FirebaseDatabase.getInstance().reference.child("Message").addChildEventListener(object : ChildEventListener{
+        FirebaseDatabase.getInstance().reference
+            .child("Message")
+            .addChildEventListener(object : ChildEventListener{
             override fun onChildAdded(p0: DataSnapshot, p1: String?) {
 
                    recyclerView.smoothScrollToPosition(recyclerView.adapter!!.itemCount)
@@ -78,7 +85,11 @@ class MessageListActivity : AppCompatActivity() {
                 val mes = p0.getValue(Message::class.java)
                 if (mes != null){
                     if (mes.uid == FirebaseAuth.getInstance().uid){
-                        adapterg.add(MessageItemFrom(mes))
+                        adapterg.add(
+                            MessageItemFrom(
+                                mes
+                            )
+                        )
 
                     }else {
                         adapterg.add(MessageItem(mes))
@@ -125,7 +136,7 @@ class MessageListActivity : AppCompatActivity() {
 
                 FirebaseDatabase.getInstance().getReference("Message").push().setValue(
                     Message(
-                        user_nameInDB, lEditText, Date().time,uid!!,""
+                        user_nameInDB, lEditText, Date().time, uid!!, ""
                     )
                 )
                 edit_message.setText("")

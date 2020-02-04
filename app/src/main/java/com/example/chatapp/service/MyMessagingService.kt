@@ -1,12 +1,13 @@
-package com.example.chatapp
+package com.example.chatapp.service
 
-import android.util.Log
+import com.example.chatapp.helpers.NotificationHelper
+import com.example.chatapp.view.ChatLogActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 
 
-class MyMessageService : FirebaseMessagingService() {
+class MyMessagingService : FirebaseMessagingService() {
     companion object{
        var  notifyUid = ""
     }
@@ -21,7 +22,8 @@ class MyMessageService : FirebaseMessagingService() {
         val token = p0.data.getValue("us_token")
         notifyUid = uid
         if (FirebaseAuth.getInstance().currentUser != null && ChatLogActivity.userUid != uid){
-            NotificationHelper().displayNotify(applicationContext, title, body,uid,token,phoneNum)
+            NotificationHelper()
+                .displayNotify(applicationContext, title, body,uid,token,phoneNum)
         }
     }
 }

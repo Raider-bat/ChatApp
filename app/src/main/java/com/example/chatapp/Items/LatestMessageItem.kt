@@ -1,5 +1,8 @@
-package com.example.chatapp
+package com.example.chatapp.Items
 
+import com.example.chatapp.data.Message
+import com.example.chatapp.R
+import com.example.chatapp.data.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -24,7 +27,9 @@ class LatestMessageItem(val message: Message) : Item<GroupieViewHolder>(){
         }else{
             message.toUid
         }
-        FirebaseDatabase.getInstance().reference.child("Users").child(chatPartId).addValueEventListener(object: ValueEventListener{
+        FirebaseDatabase.getInstance().reference.child("Users")
+            .child(chatPartId)
+            .addValueEventListener(object: ValueEventListener{
             override fun onCancelled(p0: DatabaseError) {}
 
             override fun onDataChange(p0: DataSnapshot) {
@@ -32,7 +37,10 @@ class LatestMessageItem(val message: Message) : Item<GroupieViewHolder>(){
 
             }
         })
-        FirebaseDatabase.getInstance().reference.child("Users").child(chatPartId).child("userName").addListenerForSingleValueEvent(object : ValueEventListener{
+        FirebaseDatabase.getInstance().reference.child("Users")
+            .child(chatPartId)
+            .child("userName")
+            .addListenerForSingleValueEvent(object : ValueEventListener{
             override fun onCancelled(p0: DatabaseError) {}
             override fun onDataChange(p0: DataSnapshot) {
                 if (p0.value == null){
@@ -52,7 +60,8 @@ class LatestMessageItem(val message: Message) : Item<GroupieViewHolder>(){
         val dateFormatHM = SimpleDateFormat("HH:mm")
         val dateFormatDay = SimpleDateFormat("E")
         val dateFormatDM = SimpleDateFormat("d MMM")
-        when(SimpleDateFormat("d").format(Date().time).toInt() -  SimpleDateFormat("d").format(message.time).toInt()){
+        when(SimpleDateFormat("d").format(Date().time).toInt()
+                -  SimpleDateFormat("d").format(message.time).toInt()){
             0 -> viewHolder.itemView.latest_mes_time.text = dateFormatHM.format(message.time)
 
             in 1..7 -> viewHolder.itemView.latest_mes_time.text = dateFormatDay.format(message.time)

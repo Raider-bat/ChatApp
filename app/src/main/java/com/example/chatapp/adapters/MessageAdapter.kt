@@ -1,16 +1,15 @@
-package com.example.chatapp
+package com.example.chatapp.adapters
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.chatapp.MessageAdapter.MessageViewHolder
+import com.example.chatapp.data.Message
+import com.example.chatapp.R
+import com.example.chatapp.adapters.MessageAdapter.MessageViewHolder
 import com.firebase.ui.database.FirebaseRecyclerAdapter
 import com.firebase.ui.database.FirebaseRecyclerOptions
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.FirebaseDatabase
-import java.text.SimpleDateFormat
 
 /*
 * This is class don't work, but it can :)
@@ -40,6 +39,5 @@ class MessageAdapter(options: FirebaseRecyclerOptions<Message?>) :
         var mes_user: TextView = itemView.findViewById(R.id.message_user)
         var mes_time: TextView = itemView.findViewById(R.id.message_time)
         var mes_text: TextView = itemView.findViewById(R.id.message_text)
-
     }
 }

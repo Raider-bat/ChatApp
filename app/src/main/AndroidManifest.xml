@@ -9,31 +9,31 @@
         android:roundIcon="@mipmap/ic_launcher_custom"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".AddNameUserActivity"></activity>
-        <activity android:name=".ChatLogActivity">
+        <activity android:name=".view.AddNameUserActivity"></activity>
+        <activity android:name=".view.ChatLogActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+                android:value=".view.MainActivity" />
         </activity>
-        <activity android:name=".ContactsActivity">
+        <activity android:name=".view.ContactsActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+                android:value=".view.MainActivity" />
         </activity>
 
         <service
-            android:name=".MyMessageService"
+            android:name=".service.MyMessagingService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
 
-        <activity android:name=".LoginActivity" />
+        <activity android:name=".view.LoginActivity" />
         <activity
-            android:name=".MessageListActivity"
+            android:name=".view.MessageListActivity"
             android:windowSoftInputMode="adjustPan" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".view.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

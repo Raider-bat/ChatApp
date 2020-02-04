@@ -1,28 +1,26 @@
-package com.example.chatapp
+package com.example.chatapp.view
 
 
-import android.content.Context
 import android.content.Intent
-import android.net.ConnectivityManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.ProgressBar
 import android.widget.TextView
-import androidx.core.content.getSystemService
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.chatapp.Items.LatestMessageItem
+import com.example.chatapp.R
+import com.example.chatapp.controllers.UserStatusController
+import com.example.chatapp.data.Message
+import com.example.chatapp.lifecycleobservers.MainLifecycleObserver
 import com.firebase.ui.auth.AuthUI
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import kotlinx.android.synthetic.main.activity_main.*
-import java.text.SimpleDateFormat
-import java.util.*
-import kotlin.Comparator
 import kotlin.collections.HashMap
 import kotlin.jvm.java as java1
 
@@ -70,7 +68,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        myLifecycleObserver = MainLifecycleObserver()
+        myLifecycleObserver =
+            MainLifecycleObserver()
         lifecycle.addObserver(myLifecycleObserver)
 
         checkUserVerification()
@@ -85,7 +84,10 @@ class MainActivity : AppCompatActivity() {
             finish()
         }
 
-        FirebaseDatabase.getInstance().reference.child("Users").child(FirebaseAuth.getInstance().uid!!).child("userName").addListenerForSingleValueEvent(object :
+        FirebaseDatabase.getInstance().reference.child("Users")
+            .child(FirebaseAuth.getInstance().uid!!)
+            .child("userName")
+            .addListenerForSingleValueEvent(object :
             ValueEventListener {
             override fun onCancelled(p0: DatabaseError) {}
 
@@ -110,7 +112,8 @@ class MainActivity : AppCompatActivity() {
         layoutManager.reverseLayout =true
         recyclerView.layoutManager = layoutManager
         layoutManager.stackFromEnd = true
-        recyclerView.addItemDecoration(DividerItemDecoration(this,DividerItemDecoration.VERTICAL))
+        recyclerView
+            .addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
         adapter.setOnItemClickListener { item, view ->
             val userData =  item as LatestMessageItem
             val intent = Intent(this, ChatLogActivity::class.java1)
@@ -124,15 +127,14 @@ class MainActivity : AppCompatActivity() {
         adapter.update(lastMessageMap.values.sortedBy { it.message.time })
     }
 
-
     private fun listenLastMessage() {
 
         val myUid = FirebaseAuth.getInstance().uid ?:return
-        FirebaseDatabase.getInstance().reference.child("LatestMessage").child(myUid).addListenerForSingleValueEvent(object :ValueEventListener{
-            override fun onCancelled(p0: DatabaseError) {
-
-            }
-
+        FirebaseDatabase.getInstance().reference
+            .child("LatestMessage")
+            .child(myUid)
+            .addListenerForSingleValueEvent(object :ValueEventListener{
+            override fun onCancelled(p0: DatabaseError) {}
             override fun onDataChange(p0: DataSnapshot) {
                 if (p0.childrenCount == 0L) {
                     main_activity_progress_bar.visibility = ProgressBar.INVISIBLE
@@ -141,13 +143,18 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-        FirebaseDatabase.getInstance().reference.child("LatestMessage").child(myUid).orderByChild("time").addChildEventListener(object : ChildEventListener{
+        FirebaseDatabase.getInstance().reference
+            .child("LatestMessage")
+            .child(myUid)
+            .orderByChild("time")
+            .addChildEventListener(object : ChildEventListener{
 
             override fun onChildAdded(p0: DataSnapshot, p1: String?) {
                 text_view_if_no_chats.visibility = TextView.INVISIBLE
                 main_activity_progress_bar.visibility = ProgressBar.INVISIBLE
                 val lastMes = p0.getValue(Message::class.java1) ?:return
-                lastMessageMap[p0.key!!] = LatestMessageItem(lastMes)
+                lastMessageMap[p0.key!!] =
+                    LatestMessageItem(lastMes)
                 updateRecyclerviewMessage()
                 recyclerView.smoothScrollToPosition(recyclerView.adapter!!.itemCount-1)
             }
@@ -155,7 +162,8 @@ class MainActivity : AppCompatActivity() {
             override fun onChildChanged(p0: DataSnapshot, p1: String?) {
 
                 val lastMes = p0.getValue(Message::class.java1) ?:return
-                lastMessageMap[p0.key!!] = LatestMessageItem(lastMes)
+                lastMessageMap[p0.key!!] =
+                    LatestMessageItem(lastMes)
                 updateRecyclerviewMessage()
                 recyclerView.smoothScrollToPosition(recyclerView.adapter!!.itemCount-1)
             }

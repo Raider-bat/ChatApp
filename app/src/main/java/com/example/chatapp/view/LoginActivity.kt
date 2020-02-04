@@ -1,11 +1,12 @@
-package com.example.chatapp
+package com.example.chatapp.view
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.Gravity
 import android.widget.ProgressBar
 import android.widget.Toast
+import com.example.chatapp.R
+import com.example.chatapp.data.User
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.*
 import com.google.firebase.database.DataSnapshot
@@ -41,7 +42,9 @@ class LoginActivity : AppCompatActivity() {
                 sendVerificationCode(numberPhone)
 
             }else{
-                val toast = Toast.makeText(this@LoginActivity,"Неверный номер", Toast.LENGTH_SHORT)
+                val toast = Toast.makeText(this@LoginActivity,
+                    "Неверный номер",
+                    Toast.LENGTH_SHORT)
                 toast.show()
             }
         }
@@ -62,7 +65,9 @@ class LoginActivity : AppCompatActivity() {
             object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
 
                 override fun onVerificationCompleted(credential: PhoneAuthCredential) {
-                    val toast = Toast.makeText(this@LoginActivity,"Автоматический вход", Toast.LENGTH_SHORT)
+                    val toast = Toast.makeText(this@LoginActivity,
+                        "Автоматический вход",
+                        Toast.LENGTH_SHORT)
                     toast.show()
                     signInWithPhoneAuthCredential(credential)
                 }
@@ -71,7 +76,9 @@ class LoginActivity : AppCompatActivity() {
                     // This callback is invoked in an invalid request for verification is made,
                     // for instance if the the phone number format is not valid.
                     login_progress_bar.visibility = ProgressBar.INVISIBLE
-                    val toast = Toast.makeText(this@LoginActivity,"Что-то пошло не так..", Toast.LENGTH_SHORT)
+                    val toast = Toast.makeText(this@LoginActivity,
+                        "Что-то пошло не так..",
+                        Toast.LENGTH_SHORT)
                     toast.show()
                     login_button.isEnabled = true
                 }
@@ -82,7 +89,9 @@ class LoginActivity : AppCompatActivity() {
                 ) {
                     login_progress_bar.visibility = ProgressBar.INVISIBLE
                     verificationIdCode = verificationId
-                    val toast = Toast.makeText(this@LoginActivity,"Сообщение отправлено..", Toast.LENGTH_SHORT)
+                    val toast = Toast.makeText(this@LoginActivity,
+                        "Сообщение отправлено..",
+                        Toast.LENGTH_SHORT)
                     toast.show()
                     login_button.isEnabled= true
                 }
@@ -92,7 +101,9 @@ class LoginActivity : AppCompatActivity() {
 
     private  fun verifySignInCode() {
 
-        val credential = PhoneAuthProvider.getCredential(verificationIdCode, verify_phone_code.text.toString().trim())
+        val credential = PhoneAuthProvider
+            .getCredential(verificationIdCode,
+                verify_phone_code.text.toString().trim())
         signInWithPhoneAuthCredential(credential)
     }
 
@@ -107,7 +118,10 @@ class LoginActivity : AppCompatActivity() {
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
 
-                    FirebaseDatabase.getInstance().reference.child("Users").child(FirebaseAuth.getInstance().currentUser!!.uid).child("userName").addListenerForSingleValueEvent(object : ValueEventListener{
+                    FirebaseDatabase.getInstance().reference.child("Users")
+                        .child(FirebaseAuth.getInstance().currentUser!!.uid)
+                        .child("userName")
+                        .addListenerForSingleValueEvent(object : ValueEventListener{
                         override fun onCancelled(p0: DatabaseError) {}
 
                         override fun onDataChange(p0: DataSnapshot) {
@@ -115,19 +129,26 @@ class LoginActivity : AppCompatActivity() {
                                 p0.value.toString()
                             }else{null}
 
-                                FirebaseDatabase.getInstance().getReference("Users").child(FirebaseAuth.getInstance().currentUser!!.uid)
-                                    .setValue(User(FirebaseAuth.getInstance().currentUser?.phoneNumber,
-                                        userName,
-                                        FirebaseAuth.getInstance().currentUser?.uid,
-                                        FirebaseInstanceId.getInstance().getToken()))
+                                FirebaseDatabase.getInstance().getReference("Users")
+                                    .child(FirebaseAuth.getInstance().currentUser!!.uid)
+                                    .setValue(
+                                        User(
+                                            FirebaseAuth.getInstance().currentUser?.phoneNumber,
+                                            userName,
+                                            FirebaseAuth.getInstance().currentUser?.uid,
+                                            FirebaseInstanceId.getInstance().getToken()
+                                        )
+                                    )
 
                             if (userName !=null){
-                                val intent = Intent(this@LoginActivity, MainActivity::class.java)
+                                val intent = Intent(this@LoginActivity,
+                                    MainActivity::class.java)
                                 login_progress_bar.visibility = ProgressBar.INVISIBLE
                                 startActivity(intent)
                                 finish()
                             }else{
-                                val intent = Intent(this@LoginActivity, AddNameUserActivity::class.java)
+                                val intent = Intent(this@LoginActivity,
+                                    AddNameUserActivity::class.java)
                                 val uid = FirebaseAuth.getInstance().uid?:return
                                 intent.putExtra(USER_UID,uid)
                                 login_progress_bar.visibility = ProgressBar.INVISIBLE
@@ -143,7 +164,9 @@ class LoginActivity : AppCompatActivity() {
                     if (task.exception is FirebaseAuthInvalidCredentialsException) {
                         // The verification code entered was invalid
                         login_progress_bar.visibility = ProgressBar.INVISIBLE
-                        val toast = Toast.makeText(this@LoginActivity,"Неверный код", Toast.LENGTH_SHORT)
+                        val toast = Toast.makeText(this@LoginActivity,
+                            "Неверный код",
+                            Toast.LENGTH_SHORT)
                             toast.show()
                     }
                 }

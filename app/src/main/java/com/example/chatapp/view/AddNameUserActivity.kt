@@ -1,13 +1,12 @@
-package com.example.chatapp
+package com.example.chatapp.view
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.Gravity
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
-import androidx.core.view.isVisible
+import com.example.chatapp.R
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.database.DataSnapshot
@@ -36,23 +35,38 @@ class AddNameUserActivity : AppCompatActivity() {
     private fun addUserNameInDataBase(){
         val userName = user_name.text.toString().trim()
         if (userName.length in 3..23){
-            FirebaseDatabase.getInstance().reference.child("Users").orderByChild("userName").equalTo(userName).addListenerForSingleValueEvent(object: ValueEventListener{
+            FirebaseDatabase.getInstance().reference
+                .child("Users")
+                .orderByChild("userName")
+                .equalTo(userName)
+                .addListenerForSingleValueEvent(object: ValueEventListener{
                 override fun onCancelled(p0: DatabaseError) {
                 }
 
                 override fun onDataChange(p0: DataSnapshot) {
                     if (p0.value != null){
                         add_name_progress_bar.visibility = ProgressBar.INVISIBLE
-                        val toast = Toast.makeText(this@AddNameUserActivity, "Подобный никнейм уже существует",Toast.LENGTH_SHORT)
+                        val toast = Toast.makeText(this@AddNameUserActivity,
+                            "Подобный никнейм уже существует",Toast.LENGTH_SHORT)
                         toast.show()
                     }else{
-                        FirebaseDatabase.getInstance().reference.child("Users").child(userUid).child("userName").setValue(userName).addOnCompleteListener {
+                        FirebaseDatabase.getInstance().reference
+                            .child("Users")
+                            .child(userUid)
+                            .child("userName")
+                            .setValue(userName)
+                            .addOnCompleteListener {
                             for ( i in 1..2){
-                                val updateName =  UserProfileChangeRequest.Builder().setDisplayName(userName).build()
-                                FirebaseAuth.getInstance().currentUser?.updateProfile(updateName)
+                                val updateName =  UserProfileChangeRequest
+                                    .Builder()
+                                    .setDisplayName(userName)
+                                    .build()
+                                FirebaseAuth.getInstance()
+                                    .currentUser?.updateProfile(updateName)
                             }
 
-                            val intent = Intent(this@AddNameUserActivity, MainActivity::class.java)
+                            val intent = Intent(this@AddNameUserActivity,
+                                MainActivity::class.java)
                             add_name_progress_bar.visibility = ProgressBar.INVISIBLE
                             startActivity(intent)
                             finish()

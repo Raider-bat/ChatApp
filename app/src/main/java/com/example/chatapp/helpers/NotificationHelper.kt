@@ -1,4 +1,4 @@
-package com.example.chatapp
+package com.example.chatapp.helpers
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -8,6 +8,10 @@ import android.content.Intent
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import com.example.chatapp.R
+import com.example.chatapp.data.User
+import com.example.chatapp.view.ChatLogActivity
+import com.example.chatapp.view.ContactsActivity
 import java.util.*
 
 class NotificationHelper {
@@ -15,7 +19,12 @@ class NotificationHelper {
     val channel_name = "mes_name"
     val Channel_desc = "mes_notif"
 
-    fun displayNotify(context: Context, title: String?, body:String?, uid: String?, token: String?, phoneNum: String?) {
+    fun displayNotify(context: Context,
+                      title: String?,
+                      body:String?,
+                      uid: String?,
+                      token: String?,
+                      phoneNum: String?) {
        if (title !=null && body !=null ) {
           val messId= (Date().time/1000).toInt()
            val user = User(phoneNum, title, uid, token)

@@ -1,5 +1,6 @@
-package com.example.chatapp
+package com.example.chatapp.Items
 
+import com.example.chatapp.R
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Item
 import kotlinx.android.synthetic.main.message_date_item.view.*
