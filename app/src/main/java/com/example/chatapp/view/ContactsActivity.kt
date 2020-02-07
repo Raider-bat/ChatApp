@@ -1,28 +1,43 @@
 package com.example.chatapp.view
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.LifecycleObserver
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.chatapp.Items.ContactItem
-import com.example.chatapp.R
-import com.example.chatapp.controllers.UserStatusController
-import com.example.chatapp.data.User
-import com.example.chatapp.data.UserStatus
+import com.example.chatapp.items.ContactItem
+import com.example.chatapp.model.User
+import com.example.chatapp.model.UserStatus
 import com.google.firebase.database.*
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
+import com.example.chatapp.R
+import com.example.chatapp.lifecycleobservers.ContactsLifecycleObserver
+
 
 class ContactsActivity : AppCompatActivity() {
 
     private lateinit var recyclerView: RecyclerView
+
+    val contactList = HashMap<String, ContactItem>()
     val adapter = GroupAdapter<GroupieViewHolder>()
+    val handler = Handler()
+    lateinit var myLifecycleObserver: LifecycleObserver
+
+    companion object{
+        const val USER_KEY = "USER_KEY"
+    }
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_contacts)
         supportActionBar?.title = "Контакты"
 
+        myLifecycleObserver = ContactsLifecycleObserver()
+        lifecycle.addObserver(myLifecycleObserver)
         recyclerviewSetting()
         readContactsFromDB()
     }
@@ -41,14 +56,13 @@ class ContactsActivity : AppCompatActivity() {
     }
 
 
-    companion object{
-        const val USER_KEY = "USER_KEY"
+
+    fun updateContactList(){
+             handler.postDelayed({
+            adapter.update(contactList.values.sortedBy { it.user.userStatus?.time })
+       }, 1500)
     }
 
-    val contactList = HashMap<String, ContactItem>()
-    fun updateContactList(){
-        adapter.update(contactList.values.sortedBy { it.user.userStatus?.time })
-    }
    private fun readContactsFromDB() {
 
        FirebaseDatabase.getInstance().reference.child("Users")
@@ -62,8 +76,7 @@ class ContactsActivity : AppCompatActivity() {
                val user = dataSnapshot
                    .getValue(User::class.java) ?:return
                user.userStatus = userStatus
-               contactList[dataSnapshot.key!!] =
-                   ContactItem(user)
+               contactList[dataSnapshot.key!!] = ContactItem(user)
                updateContactList()
            }
 
@@ -92,14 +105,4 @@ class ContactsActivity : AppCompatActivity() {
            override fun onChildRemoved(p0: DataSnapshot) {}
        })
    }
-
-    override fun onStart() {
-        super.onStart()
-        UserStatusController().userStatusWriter("online")
-    }
-
-    override fun onPause() {
-        super.onPause()
-        UserStatusController().userStatusWriter("offline")
-    }
 }

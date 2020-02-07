@@ -1,8 +1,8 @@
-package com.example.chatapp.Items
+package com.example.chatapp.items
 
 
 import com.example.chatapp.R
-import com.example.chatapp.data.User
+import com.example.chatapp.model.User
 import com.example.chatapp.helpers.UserStatusHelper
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Item

@@ -10,10 +10,10 @@ import android.widget.TextView
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.chatapp.Items.LatestMessageItem
+import com.example.chatapp.items.LatestMessageItem
 import com.example.chatapp.R
 import com.example.chatapp.controllers.UserStatusController
-import com.example.chatapp.data.Message
+import com.example.chatapp.model.Message
 import com.example.chatapp.lifecycleobservers.MainLifecycleObserver
 import com.firebase.ui.auth.AuthUI
 import com.google.firebase.auth.FirebaseAuth
@@ -176,7 +176,6 @@ class MainActivity : AppCompatActivity() {
         })
         main_activity_progress_bar.visibility = ProgressBar.VISIBLE
     }
-
     override fun onStart() {
         super.onStart()
         checkUserVerification()

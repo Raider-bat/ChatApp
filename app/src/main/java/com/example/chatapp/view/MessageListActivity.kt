@@ -7,9 +7,9 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.chatapp.Items.MessageItem
-import com.example.chatapp.Items.MessageItemFrom
-import com.example.chatapp.data.Message
+import com.example.chatapp.items.MessageItem
+import com.example.chatapp.items.MessageItemFrom
+import com.example.chatapp.model.Message
 import com.example.chatapp.adapters.MessageAdapter
 import com.example.chatapp.R
 import com.firebase.ui.database.FirebaseRecyclerOptions

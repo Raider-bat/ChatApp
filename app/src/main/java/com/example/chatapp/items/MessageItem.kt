@@ -1,6 +1,6 @@
-package com.example.chatapp.Items
+package com.example.chatapp.items
 
-import com.example.chatapp.data.Message
+import com.example.chatapp.model.Message
 import com.example.chatapp.R
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Item

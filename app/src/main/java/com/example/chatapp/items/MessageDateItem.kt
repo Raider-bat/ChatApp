@@ -1,4 +1,4 @@
-package com.example.chatapp.Items
+package com.example.chatapp.items
 
 import com.example.chatapp.R
 import com.xwray.groupie.GroupieViewHolder

@@ -6,17 +6,13 @@ import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
 import com.example.chatapp.controllers.UserStatusController
 
-class MainLifecycleObserver : LifecycleObserver {
-    val handler = Handler()
+class ContactsLifecycleObserver: LifecycleObserver {
+    val handler  = Handler()
     @OnLifecycleEvent(Lifecycle.Event.ON_START )
-    fun startOnlineStatusListener(){
-            UserStatusController().userStatusWriter("online")
-    }
-    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME )
     fun resumeOnlineStatusListener(){
-         handler.postDelayed({
-        UserStatusController().userStatusWriter("online")
-          }, 1000)
+        handler.postDelayed({
+            UserStatusController().userStatusWriter("online")
+        },200)
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE )
@@ -28,4 +24,5 @@ class MainLifecycleObserver : LifecycleObserver {
     fun offlineDestroyStatusListener(){
         UserStatusController().userStatusWriter("offline")
     }
+
 }

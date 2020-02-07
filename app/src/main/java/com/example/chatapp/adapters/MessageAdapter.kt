@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.chatapp.data.Message
+import com.example.chatapp.model.Message
 import com.example.chatapp.R
 import com.example.chatapp.adapters.MessageAdapter.MessageViewHolder
 import com.firebase.ui.database.FirebaseRecyclerAdapter
@@ -22,9 +22,9 @@ class MessageAdapter(options: FirebaseRecyclerOptions<Message?>) :
         position: Int,
         model: Message
     ) {
-        holder.mes_text.text = model.text
-        holder.mes_user.text = model.name
-        holder.mes_time.text = model.time.toString()
+        holder.mesText.text = model.text
+        holder.mesUser.text = model.name
+        holder.mesTime.text = model.time.toString()
     }
 
 
@@ -36,8 +36,8 @@ class MessageAdapter(options: FirebaseRecyclerOptions<Message?>) :
 
      class MessageViewHolder(itemView: View) :
         RecyclerView.ViewHolder(itemView) {
-        var mes_user: TextView = itemView.findViewById(R.id.message_user)
-        var mes_time: TextView = itemView.findViewById(R.id.message_time)
-        var mes_text: TextView = itemView.findViewById(R.id.message_text)
+        var mesUser: TextView = itemView.findViewById(R.id.message_user)
+        var mesTime: TextView = itemView.findViewById(R.id.message_time)
+        var mesText: TextView = itemView.findViewById(R.id.message_text)
     }
 }

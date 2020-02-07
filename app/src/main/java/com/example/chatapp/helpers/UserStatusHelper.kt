@@ -1,7 +1,8 @@
 package com.example.chatapp.helpers
 
 import android.util.Log
-import com.example.chatapp.data.UserStatus
+import androidx.lifecycle.LiveData
+import com.example.chatapp.model.UserStatus
 import java.text.SimpleDateFormat
 import java.util.*
 

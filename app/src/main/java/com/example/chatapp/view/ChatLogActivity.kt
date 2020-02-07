@@ -11,15 +11,14 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleObserver
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.chatapp.Items.MessageDateItem
-import com.example.chatapp.Items.MessageItem
-import com.example.chatapp.Items.MessageItemFrom
 import com.example.chatapp.R
-import com.example.chatapp.controllers.UserStatusController
-import com.example.chatapp.data.Message
-import com.example.chatapp.data.User
-import com.example.chatapp.data.UserStatus
+import com.example.chatapp.model.Message
+import com.example.chatapp.model.User
+import com.example.chatapp.model.UserStatus
 import com.example.chatapp.helpers.UserStatusHelper
+import com.example.chatapp.items.MessageDateItem
+import com.example.chatapp.items.MessageItem
+import com.example.chatapp.items.MessageItemFrom
 import com.example.chatapp.lifecycleobservers.ChatLogLifecycleObserver
 import com.example.chatapp.lifecycleobservers.MyActionModeCallBack
 import com.example.chatapp.service.MyMessagingService
@@ -238,10 +237,5 @@ class ChatLogActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         userUid = user.uid!!
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        UserStatusController().userStatusWriter("offline")
     }
 }

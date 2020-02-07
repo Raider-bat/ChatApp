@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.widget.ProgressBar
 import android.widget.Toast
 import com.example.chatapp.R
-import com.example.chatapp.data.User
+import com.example.chatapp.model.User
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.*
 import com.google.firebase.database.DataSnapshot

@@ -9,15 +9,15 @@ import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.example.chatapp.R
-import com.example.chatapp.data.User
+import com.example.chatapp.model.User
 import com.example.chatapp.view.ChatLogActivity
 import com.example.chatapp.view.ContactsActivity
 import java.util.*
 
 class NotificationHelper {
-    val channel_id ="mes_id"
-    val channel_name = "mes_name"
-    val Channel_desc = "mes_notif"
+    private val channelId ="mes_id"
+    private val channelName = "mes_name"
+    private val channelDesc = "mes_notif"
 
     fun displayNotify(context: Context,
                       title: String?,
@@ -29,14 +29,14 @@ class NotificationHelper {
           val messId= (Date().time/1000).toInt()
            val user = User(phoneNum, title, uid, token)
            val notificationManager = NotificationManagerCompat.from(context)
-           val nofitIntent = Intent(context, ChatLogActivity::class.java)
-           nofitIntent.putExtra(ContactsActivity.USER_KEY, user)
+           val notifyIntent = Intent(context, ChatLogActivity::class.java)
+           notifyIntent.putExtra(ContactsActivity.USER_KEY, user)
            val contentIntent = PendingIntent.getActivity(
-               context, 0, nofitIntent,
+               context, 0, notifyIntent,
                PendingIntent.FLAG_CANCEL_CURRENT
            )
 
-           val builder = NotificationCompat.Builder(context, channel_id)
+           val builder = NotificationCompat.Builder(context, channelId)
                .setSmallIcon(R.mipmap.ic_launcher_custom)
                .setContentTitle(title)
                .setContentText(body)
@@ -47,10 +47,10 @@ class NotificationHelper {
 
            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                val mChannel = NotificationChannel(
-                   channel_id,
-                   channel_name, NotificationManager.IMPORTANCE_HIGH
+                   channelId,
+                   channelName, NotificationManager.IMPORTANCE_HIGH
                )
-               mChannel.description = Channel_desc
+               mChannel.description = channelDesc
                notificationManager?.createNotificationChannel(mChannel)
                notificationManager?.cancel(messId)
            }

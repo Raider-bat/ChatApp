@@ -1,6 +1,6 @@
 package com.example.chatapp.controllers
 
-import com.example.chatapp.data.UserStatus
+import com.example.chatapp.model.UserStatus
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError

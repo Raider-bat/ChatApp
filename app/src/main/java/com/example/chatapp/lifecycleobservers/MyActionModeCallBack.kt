@@ -3,7 +3,7 @@ package com.example.chatapp.lifecycleobservers
 import android.view.ActionMode
 import android.view.Menu
 import android.view.MenuItem
-import com.example.chatapp.Items.MessageItemFrom
+import com.example.chatapp.items.MessageItemFrom
 import com.example.chatapp.R
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot

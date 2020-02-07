@@ -1,8 +1,8 @@
-package com.example.chatapp.Items
+package com.example.chatapp.items
 
-import com.example.chatapp.data.Message
+import com.example.chatapp.model.Message
 import com.example.chatapp.R
-import com.example.chatapp.data.User
+import com.example.chatapp.model.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError

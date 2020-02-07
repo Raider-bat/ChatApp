@@ -22,11 +22,11 @@
 
     <hani.momanii.supernova_emoji_library.Helper.EmojiconTextView
         android:id="@+id/latest_mes_text"
-        android:layout_width="358dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        emojicon:emojiconSize="18sp"
         android:layout_marginStart="24dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="32dp"
         android:layout_marginBottom="16dp"
         android:ellipsize="end"
         android:maxLength="45"
@@ -34,8 +34,10 @@
         android:textAlignment="viewStart"
         android:textColor="#EEEEEE"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/latest_mes_user_name" />
+        app:layout_constraintTop_toBottomOf="@+id/latest_mes_user_name"
+        emojicon:emojiconSize="18sp" />
 
     <TextView
         android:id="@+id/latest_mes_time"
